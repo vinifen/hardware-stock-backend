@@ -4,12 +4,14 @@ require_once __DIR__ . '/vendor/autoload.php';
 use core\Header;
 use core\library\DotenvHandler;
 use core\library\Router;
+use app\database\DbHandler;
+use core\library\ContainerDI;
 
 DotenvHandler::loadDotEnv();
 
 Header::apply();
-
-$router = new Router();
+$containerDI = new ContainerDI();
+$router = new Router($containerDI->build());
 $router->run();
 
 

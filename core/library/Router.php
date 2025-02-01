@@ -5,8 +5,11 @@ require_once __DIR__ . '/../../app/routes/userRoutes.php';
 use app\routes; 
 use FastRoute;
 use FastRoute\RouteCollector;
+use DI\Container;
 
 class Router{ 
+
+  public function __construct(private Container $container) {}
 
   public function run(){
     $dispatcher = FastRoute\simpleDispatcher(
@@ -43,7 +46,7 @@ class Router{
           call_user_func_array([$newMiddleware, $functionMiddleware], $params);
         }
   
-        $newController = new $controller();
+        $newController = $this->container->get($controller);
         call_user_func_array([$newController, $functionController], $params);
         break;
     }
