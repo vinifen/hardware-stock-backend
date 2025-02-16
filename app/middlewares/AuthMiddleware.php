@@ -10,7 +10,7 @@ class AuthMiddleware {
       header('Content-Type: application/json');
       echo json_encode([
         'status' => false,
-        'message' => 'Middleware Ok'
+        'message' => 'Middleware false'
       ]);
       exit(); 
     }
