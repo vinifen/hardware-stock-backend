@@ -7,8 +7,6 @@ use Exception;
 class JwtHandler{ 
   private $jwtKey;
 
-  
-
   public function __construct($key) { 
     $this->jwtKey = $key;
   }
