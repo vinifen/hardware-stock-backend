@@ -1,7 +1,13 @@
 <?php
 namespace core\library;
 
+
+use app\controllers\AuthController;
+use app\controllers\BrandController;
+use app\controllers\CategoryController;
 use app\controllers\UserController;
+use app\controllers\HardwareContoller;
+
 use DI\Container;
 use app\database\DBConnection;
 
@@ -17,7 +23,11 @@ class ContainerDI {
   public static function build(){
     $container = new Container();
 
+    $container->set(AuthController::class, \DI\autowire(AuthController::class));
+    $container->set(BrandController::class, \DI\autowire(BrandController::class));
+    $container->set(CategoryController::class, \DI\autowire(CategoryController::class));
     $container->set(UserController::class, \DI\autowire(UserController::class));
+    $container->set(HardwareContoller::class, \DI\autowire(HardwareContoller::class));
 
     $container->set(DBConnection::class, \DI\autowire(DBConnection::class));
 

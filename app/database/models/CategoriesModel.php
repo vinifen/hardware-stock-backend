@@ -2,6 +2,8 @@
 namespace app\database\models;
 
 use app\database\DBConnection;
+use core\exceptions\ClientException;
+use core\exceptions\InternalException;
 use \PDO;
 
 class CategoriesModel {
@@ -9,65 +11,100 @@ class CategoriesModel {
 
   public function __construct(DBConnection $db)
   {
+    echo "construct CategoriesModel";
     $this->pdo = $db->connect();
   }
 
   public function insert(string $name) {
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO categories (name) VALUES (:name)");
-      $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-      $stmt->execute(); 
+      $stmt = $this->pdo->prepare("INSERT INTO categories (name) VALUES (?)");
+      $stmt->bindValue(1, $name, PDO::PARAM_STR);
+      $stmt->execute();
 
       $lastInsertId = $this->pdo->lastInsertId();
-      
       if (empty($lastInsertId)) {
-        throw new \PDOException("Failed to retrieve last insert category ID");
+        throw new ClientException("Failed to insert category. Please check your input.");
       }
-      
+
       echo "Category inserted with ID: " . $lastInsertId;
       return $lastInsertId;
-
     } catch (\PDOException $e) {
-      echo "Error inserting category: " . $e->getMessage();
+      throw new InternalException("Error inserting category: " . $e->getMessage());
     }
   }
 
-  public function alter(int $categoriesId, string $newName) {
+  public function select(int $categoryId) {
+    try {
+      $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE id = ?");
+      $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
+      $stmt->execute();
+
+      $result = $stmt->fetch(PDO::FETCH_ASSOC);
+      if (empty($result)) {
+        echo "No data found for category with ID: " . $categoryId;
+        return null;
+      }
+
+      echo print_r($result, true) . " TEST DB - Select Category";
+      return $result;
+    } catch (\PDOException $e) {
+      throw new InternalException("Error retrieving category data for category ID: " . $e->getMessage());
+    }
+  }
+
+  public function selectAllUserId(int $userId){
+    try {
+      $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE users_id = ?");
+      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->execute();
+
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      if (empty($result)) {
+        echo "No data found for category with user ID: " . $userId;
+        return null;
+      }
+
+      echo print_r($result, true) . " TEST DB - Select Category";
+      return $result;
+    } catch (\PDOException $e) {
+      throw new InternalException("Error retrieving category data for user ID: " . $e->getMessage());
+    }
+  }
+
+  public function alter(int $categoryId, string $newName): bool {
     try {
       $stmt = $this->pdo->prepare("UPDATE categories SET name = ? WHERE id = ?");
       $stmt->bindValue(1, $newName, PDO::PARAM_STR);
-      $stmt->bindValue(2, $categoriesId, PDO::PARAM_INT);
+      $stmt->bindValue(2, $categoryId, PDO::PARAM_INT);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
-        echo "No category found with ID: " . $categoriesId . " or name is the same.";
+        echo "No category found with ID: " . $categoryId . " or name is the same.";
         return false;
       }
 
-      echo "Category name updated successfully for category ID: " . $categoriesId;
+      echo "Category name updated successfully for category ID: " . $categoryId;
       return true;
-
     } catch (\PDOException $e) {
-      echo "Error updating category name for category ID: " . $categoriesId . ": " . $e->getMessage();
+      throw new InternalException("Error updating category name for category ID $categoryId: " . $e->getMessage());
     }
   }
 
-  public function delete(int $categoriesId) {
+  public function delete(int $categoryId): bool {
     try {
       $stmt = $this->pdo->prepare("DELETE FROM categories WHERE id = ?");
-      $stmt->bindValue(1, $categoriesId, PDO::PARAM_INT);
+      $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
-        echo "No category found with ID: " . $categoriesId;
+        echo "No category found with ID: " . $categoryId;
         return false;
       }
 
-      echo "Category with ID: " . $categoriesId . " deleted successfully.";
+      echo "Category with ID: " . $categoryId . " deleted successfully.";
       return true;
-
     } catch (\PDOException $e) {
-      echo "Error deleting category with ID: " . $categoriesId . ": " . $e->getMessage();
+      throw new InternalException("Error deleting category with ID $categoryId: " . $e->getMessage());
     }
   }
 }
