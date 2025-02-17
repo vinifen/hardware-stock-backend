@@ -6,11 +6,14 @@ use app\controllers\UserController;
 use app\middlewares\AuthMiddleware;
 
 function userRoutes(RouteCollector $router) {
+
+  $router->addRoute('POST', '/users', [UserController::class, 'create']);
   
-  $router->addRoute('GET', '/users', [UserController::class, 'getUser', AuthMiddleware::class, 'handle']);
+  $router->addRoute('GET', '/users/{publicUserId}', [UserController::class, 'get', AuthMiddleware::class, 'handle']);
 
-  $router->addRoute('POST', '/users', [UserController::class, 'createUser']);
+  $router->addRoute('PATCH', '/users/{publicUserId}/username', [UserController::class, 'updateUsername', AuthMiddleware::class, 'handle']);
+  $router->addRoute('PATCH', '/users/{publicUserId}/password', [UserController::class, 'updatePassword', AuthMiddleware::class, 'handle']);
 
-  $router->addRoute('DELETE', '/users', [UserController::class, 'deleteUser']);
+  $router->addRoute('DELETE', '/users/{publicUserId}', [UserController::class, 'delete', AuthMiddleware::class, 'handle']);
 
 }

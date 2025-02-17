@@ -1,23 +1,33 @@
 <?php
 namespace core\library;
-require_once __DIR__ . '/../../app/routes/userRoutes.php';
 
-use app\routes; 
+require_once __DIR__ . '/../../app/routes/authRoutes.php';
+require_once __DIR__ . '/../../app/routes/userRoutes.php';
+require_once __DIR__ . '/../../app/routes/brandRoutes.php';
+require_once __DIR__ . '/../../app/routes/categoryRoutes.php';
+require_once __DIR__ . '/../../app/routes/hardwareRoutes.php';
+
 use FastRoute;
 use FastRoute\RouteCollector;
 use DI\Container;
 
-class Router{ 
+use app\routes;
+
+
+class Router { 
 
   public function __construct(private Container $container) {}
 
-  public function run(){
+  public function run() {
     $dispatcher = FastRoute\simpleDispatcher(
-      function (RouteCollector $route){
+      function (RouteCollector $route) {
+        routes\authRoutes($route);
         routes\userRoutes($route);
+        routes\brandRoutes($route);
+        routes\categoryRoutes($route);
+        routes\hardwareRoutes($route);
       }
     );
-
     $method = $_SERVER['REQUEST_METHOD'];
     $uri = $_SERVER['REQUEST_URI'];
 
@@ -35,10 +45,10 @@ class Router{
         $controller = $routeInfo[1][0];
         $functionController = $routeInfo[1][1];
 
-        $middleware = $routeInfo[1][2];
-        $functionMiddleware = $routeInfo[1][3];
+        $middleware = $routeInfo[1][2] ?? null;
+        $functionMiddleware = $routeInfo[1][3] ?? null;
 
-        $params = $routeInfo[2];
+        $params = array_values($routeInfo[2]);
 
         if($middleware){
           echo "Middleware existe";

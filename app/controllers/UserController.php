@@ -13,21 +13,23 @@ class UserController {
     private HardwaresModel $hardwareModel,
   ) {}
 
-  public function getUser(){
-    try {
-      $this->hardwareModel->selectAllRelatedByUserId(2);
-      // $this->userModel->selectByUserId(33);
-    } catch (\Exception $e) {
-      echo $e;
-    }
-    
-  }
-
-  public function createUser(){
+  public function create(){
     echo "CREATE USER OK";
   }
 
-  public function DeleteUser(){
-    echo "DELETE USER OK";
+  public function get($publicUserId){
+    echo var_dump( $publicUserId ). " PublicUserId getUser "; 
+  }
+
+  public function updateUsername($publicUserId){
+    echo $publicUserId . " PublicUserId updateUsername "; 
+  }
+
+  public function updatePassword($publicUserId){
+    echo $publicUserId . "PublicUserId updatePassword";
+  }
+
+  public function delete($publicUserId){
+    echo $publicUserId . " PublicUserId DeleteUser "; 
   }
 }
