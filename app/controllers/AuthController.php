@@ -2,12 +2,15 @@
 
 namespace app\controllers;
 
-use app\database\models\RefreshTokensModel;
+use app\services\AuthService;
+
 
 class AuthController {
-  public function __construct(private RefreshTokensModel $refreshTokensModel) {}
+  public function __construct(private AuthService $authService) {}
 
   public function login() {
+    echo "AQUI login";
+    
     echo "User login.";
   }
 

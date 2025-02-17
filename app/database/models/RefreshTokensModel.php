@@ -36,10 +36,11 @@ class RefreshTokensModel {
   }
 
 
-  public function select(string $rtUuid): ?array {
+  public function select(string $rtUuid, int $userId): ?array {
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM refresh_tokens WHERE uuid = ?");
+      $stmt = $this->pdo->prepare("SELECT * FROM refresh_tokens WHERE uuid = ? AND users_id = ?");
       $stmt->bindValue(1, $rtUuid, PDO::PARAM_STR);
+      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
       $stmt->execute();
       
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
