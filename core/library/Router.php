@@ -1,11 +1,11 @@
 <?php
 namespace core\library;
 
-require_once __DIR__ . '/../../app/routes/authRoutes.php';
-require_once __DIR__ . '/../../app/routes/userRoutes.php';
-require_once __DIR__ . '/../../app/routes/brandRoutes.php';
-require_once __DIR__ . '/../../app/routes/categoryRoutes.php';
-require_once __DIR__ . '/../../app/routes/hardwareRoutes.php';
+require_once base_path() . '/app/routes/authRoutes.php';
+require_once base_path() . '/app/routes/userRoutes.php';
+require_once base_path() . '/app/routes/brandRoutes.php';
+require_once base_path() . '/app/routes/categoryRoutes.php';
+require_once base_path() . '/app/routes/hardwareRoutes.php';
 
 use FastRoute;
 use FastRoute\RouteCollector;

@@ -9,7 +9,6 @@ class UserValidator{
     if (!preg_match($regexUsername, $username) || strlen($username) < 2 || strlen($username) > 50) {
       throw new ClientException("Invalid username. It must be between 2 and 50 characters long and cannot have spaces at the beginning or end.");
     }
-    return true;
   }
 
   static public function password(string $password){
@@ -17,6 +16,5 @@ class UserValidator{
     if(!preg_match($regexPassword, $password)){
       throw new ClientException("Invalid password. It must be between 6 and 60 characters long and cannot contain spaces.");
     }
-    return false;
   }
 }

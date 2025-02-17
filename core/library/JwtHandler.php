@@ -8,7 +8,12 @@ class JwtHandler{
   private $jwtKey;
 
   public function __construct($key) { 
+    echo "CONTRUCT JWTHANDLER";
     $this->jwtKey = $key;
+  }
+
+  public function test($testParam){
+    echo  "JWT " . $testParam . " OK ";
   }
 
   public function encodeToken($user) {
@@ -32,4 +37,5 @@ class JwtHandler{
       return 'Invalid token: ' . $error->getMessage();
     }
   }
+
 }
