@@ -51,8 +51,7 @@ class Router {
         $params = array_values($routeInfo[2]);
 
         if($middleware){
-          echo "Middleware existe";
-          $newMiddleware = new $middleware();
+          $newMiddleware = $this->container->get($middleware);
           call_user_func_array([$newMiddleware, $functionMiddleware], $params);
         }
   

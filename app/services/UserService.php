@@ -11,19 +11,17 @@ use core\exceptions\InternalException;
 class UserService {
   public function __construct(private UsersModel $userModel) {}
 
-  function createUser(string $username, string $password){
+  function createUser(string $username, string $hashPassword){
     try { 
-      UserValidator::username($password);
+      UserValidator::username($username);
       $hasUser = $this->userModel->selectUsernameAndUserIdByUsername($username);
       if($hasUser !== null){
         throw new ClientException("User already exists");
       }
 
-      UserValidator::password($username);
-
       $publicUserId = Uuid::uuid7();
       echo $publicUserId;
-      $this->userModel->insert($username, $password, $publicUserId);
+      $this->userModel->insert($username, $hashPassword, $publicUserId);
 
       return "User successfully created";
     } catch (ClientException | InternalException $e) {
@@ -35,8 +33,11 @@ class UserService {
 
   public function get(string $publicUserId){
     try {
-      $userId = $this->getUserId($publicUserId);
-      $userData = $this->userModel->select($userId);
+      $result = $this->userModel->selectUserIdByPublicId($publicUserId);
+      echo var_dump($result) . "VARDUM GET" . $publicUserId;
+      $userData = $this->userModel->select($result["id"]);
+      unset($userDatap["id"]);
+      return $userData;
       echo "GET USER SERVICE ok";
     } catch (ClientException $e) {
       throw new ClientException($e->getMessage());
@@ -46,9 +47,6 @@ class UserService {
     
   } 
 
-  public function getUserId(string $publicUserId){
-    $userId = $this->userModel->selectUserIdByPublicId($publicUserId);
-    return  $userId;  
-  }
+ 
 
 }

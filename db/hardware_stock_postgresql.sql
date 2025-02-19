@@ -6,8 +6,8 @@ CREATE DATABASE hardware_stock;
 CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
 	public_id CHAR(36) UNIQUE NOT NULL,
-	password VARCHAR(50) NOT NULL,
-	username VARCHAR(60) UNIQUE NOT NULL,
+	password VARCHAR(64) NOT NULL,
+	username VARCHAR(64) UNIQUE NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE hardwares (
 );
 
 CREATE TABLE refresh_tokens (
-	uuid CHAR(36) NOT NULL PRIMARY KEY,
+	uuid CHAR(64) NOT NULL PRIMARY KEY,
 	token TEXT NOT NULL, 
 	users_id INT NOT NULL, 
 	expires_at TIMESTAMP NOT NULL,  

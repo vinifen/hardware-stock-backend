@@ -16,10 +16,12 @@ class RefreshTokensModel {
 
   public function insert(string $token, int $userId, string $rtUuid): bool {
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO refresh_tokens (uuid, users_id, token) VALUES (?, ?, ?)");
+      $expiresAt = date('Y-m-d H:i:s', strtotime('+7 days'));
+      $stmt = $this->pdo->prepare("INSERT INTO refresh_tokens (uuid, users_id, token, expires_at) VALUES (?, ?, ?, ?)");
       $stmt->bindValue(1, $rtUuid, PDO::PARAM_STR);
       $stmt->bindValue(2, $userId, PDO::PARAM_INT);
       $stmt->bindValue(3, $token, PDO::PARAM_STR);
+      $stmt->bindValue(4, $expiresAt, PDO::PARAM_STR);
       
       $stmt->execute();
       

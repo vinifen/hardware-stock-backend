@@ -11,6 +11,7 @@ function handleControllerRequest(callable $callback, string $contextError){
     send_response(false, ["message" => $e->getMessage()], 400); 
   } catch (InternalException $e) {
     error_log($e);
+    echo $e;
     send_response(false, ["message" => "Internal error " . $contextError], 500); 
   } catch (\Exception $e){
     error_log($e);
