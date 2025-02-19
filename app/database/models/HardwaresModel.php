@@ -15,12 +15,14 @@ class HardwaresModel {
     $this->pdo = $db->connect();
   }
 
-  public function insert(string $name, float $price, int $userId) {
+  public function insert(string $name, float $price, int $userId = null, int $brandId = null, int $categoryId = null) {
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO hardwares (name, price, users_id) VALUES (?, ?, ?)");
+      $stmt = $this->pdo->prepare("INSERT INTO hardwares (name, price, users_id, brands_id, categories_id) VALUES (?, ?, ?, ?, ?)");
       $stmt->bindValue(1, $name, PDO::PARAM_STR);
       $stmt->bindValue(2, $price, PDO::PARAM_STR);
       $stmt->bindValue(3, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(4, $brandId, PDO::PARAM_INT);
+      $stmt->bindValue(5, $categoryId, PDO::PARAM_INT);
 
       $stmt->execute(); 
 
@@ -93,8 +95,30 @@ class HardwaresModel {
     }
   }
 
+  public function selectAllByUserId(int $userId){
+    try {
+      $stmt = $this->pdo->prepare("SELECT * FROM hardwares WHERE users_id = ?");
+      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->execute();
+
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      if (empty($result)) {
+        echo "No hardwares found for user with ID: " . $userId;
+        return null;
+      }
+
+      echo print_r($result) . " TEST DB - Select hardwares for user ID";
+      return $result;
+
+    } catch (\PDOException $e) {
+      throw new InternalException("Error retrieving hardwares for user ID: " . $userId . ": " . $e->getMessage());
+    }
+  }
+
 
   public function selectAllRelatedByUserId(int $userId) {
+    echo "PELO AMOR DE DEUS " . $userId;
     try {
       $stmt = $this->pdo->prepare(
         "SELECT 
@@ -206,15 +230,15 @@ class HardwaresModel {
   }
 
 
-  public function alterCategorieId(int $hardwareId, int $categorieId) {
+  public function alterCategoryId(int $hardwareId, int $categoryId) {
     try {
       $stmt = $this->pdo->prepare("UPDATE hardwares SET categories_id = ? WHERE id = ?");
-      $stmt->bindValue(1, $categorieId, PDO::PARAM_INT);
+      $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
       $stmt->bindValue(2, $hardwareId, PDO::PARAM_INT);
       $stmt->execute();
 
       if ($stmt->rowCount() > 0) {
-        echo "Category ID for hardware with ID {$hardwareId} has been updated to {$categorieId}.";
+        echo "Category ID for hardware with ID {$hardwareId} has been updated to {$categoryId}.";
         return true;
       } else {
         echo "No hardware found with ID {$hardwareId}, or the categories_id is already up to date.";
@@ -224,5 +248,51 @@ class HardwaresModel {
       throw new InternalException("Error updating the categories_id for hardware: " . $e->getMessage());
     }
   }
+
+  public function selectAveragePriceByCategory() {
+    try {
+      $stmt = $this->pdo->prepare(
+        "SELECT categories.name AS category_name, AVG(hardwares.price) AS avg_price
+          FROM hardwares
+          INNER JOIN categories ON hardwares.categories_id = categories.id
+          GROUP BY categories.name"
+      );
+      $stmt->execute();
+
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      if (empty($result)) {
+        echo "No data found for average price by category.";
+        return null;
+      }
+
+      return $result;
+
+    } catch (\PDOException $e) {
+      throw new InternalException("Error retrieving average price by category: " . $e->getMessage());
+    }
+  }
+
+  public function selectTotalPrice($userId) {
+    try {
+      $stmt = $this->pdo->prepare("SELECT SUM(price) AS total_price FROM hardwares WHERE users_id = ?");
+      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->execute();
+
+      $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (empty($result) || $result['total_price'] === null) {
+      echo "No hardware prices found.";
+      return 0;
+    }
+
+    return $result['total_price'];
+
+  } catch (\PDOException $e) {
+    throw new InternalException("Error retrieving total price: " . $e->getMessage());
+  }
+}
+
+
 
 }

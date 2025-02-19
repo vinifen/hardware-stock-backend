@@ -18,9 +18,11 @@ use app\database\models\RefreshTokensModel;
 use app\database\models\UsersModel;
 use app\middlewares\AuthMiddleware;
 
+use app\services\HardwareService;
 use app\services\UserService;
 use app\services\AuthService;
-
+use app\services\BrandService;
+use app\services\CategoryService;
 use core\library\JwtHandler;
 
 class ContainerDI {
@@ -29,6 +31,9 @@ class ContainerDI {
 
     $container->set(UserService::class, \DI\autowire(UserService::class));
     $container->set(AuthService::class, \DI\autowire(AuthService::class));
+    $container->set(HardwareService::class, \DI\autowire(HardwareService::class));
+    $container->set(CategoryService::class, \DI\autowire(CategoryService::class));
+    $container->set(BrandService::class, \DI\autowire(BrandService::class));
 
     $container->set(AuthController::class, \DI\autowire(AuthController::class));
     $container->set(BrandController::class, \DI\autowire(BrandController::class));

@@ -23,7 +23,7 @@ class UserService {
       echo $publicUserId;
       $this->userModel->insert($username, $hashPassword, $publicUserId);
 
-      return "User successfully created";
+      return "User successfully created with";
     } catch (ClientException | InternalException $e) {
       throw $e; 
     } catch (\Exception $e){
@@ -33,7 +33,10 @@ class UserService {
 
   public function get(string $publicUserId){
     try {
-      $result = $this->userModel->selectUserIdByPublicId($publicUserId);
+      $result = $this->userModel->selectUserIdAndUsernameByPublicId($publicUserId);
+      if(empty($result)){
+        throw new ClientException("User not found");
+      }
       echo var_dump($result) . "VARDUM GET" . $publicUserId;
       $userData = $this->userModel->select($result["id"]);
       unset($userDatap["id"]);
@@ -44,7 +47,6 @@ class UserService {
     } catch (InternalException $e){
       throw new InternalException("[Get user]: " . $e->getMessage());
     }
-    
   } 
 
  

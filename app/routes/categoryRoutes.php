@@ -6,12 +6,12 @@ use app\controllers\CategoryController;
 use app\middlewares\AuthMiddleware;
 
 function categoryRoutes(RouteCollector $router) {
-  $router->addRoute("POST", "/categories", [CategoryController::class, "create"]);
-
-  $router->addRoute("GET", "/categories/{categoriesId}", [CategoryController::class, "get", AuthMiddleware::class, "handle"]);
-  $router->addRoute("GET", "/categories/all/{userId}", [CategoryController::class, "getAllByUserId", AuthMiddleware::class, "handle"]);
-
-  $router->addRoute("PUT", "/categories/{categoriesId}", [CategoryController::class, "update", AuthMiddleware::class, "handle"]);
-
-  $router->addRoute("DELETE", "/categories/{categoriesId}", [CategoryController::class, "delete", AuthMiddleware::class, "handle"]);
+  $router->addRoute('POST', '/users/{public_user_id}/categories', [CategoryController::class, 'create', AuthMiddleware::class, 'handle']);
+  
+  $router->addRoute('GET', '/users/{public_user_id}/categories/{categoryId}', [CategoryController::class, 'get', AuthMiddleware::class, 'handle']);
+  $router->addRoute('GET', '/users/{public_user_id}/categories/all', [CategoryController::class, 'getAllByUserId', AuthMiddleware::class, 'handle']);
+  
+  $router->addRoute('PUT', '/users/{public_user_id}/categories/{categoryId}', [CategoryController::class, 'update', AuthMiddleware::class, 'handle']);
+  
+  $router->addRoute('DELETE', '/users/{public_user_id}/categories/{categoryId}', [CategoryController::class, 'delete', AuthMiddleware::class, 'handle']);
 }
