@@ -5,23 +5,17 @@ use \Firebase\JWT\JWT;
 use Exception;
 
 class JwtHandler{ 
-  private $jwtKey;
 
-  public function __construct($key) { 
+  public function __construct(private $jwtKey) {
     echo "CONTRUCT JWTHANDLER";
-    $this->jwtKey = $key;
   }
 
   public function test($testParam){
     echo  "JWT " . $testParam . " OK ";
   }
 
-  public function encodeToken($user) {
+  public function encodeToken($payload) {
     try{ 
-      $payload = [
-          'user' => $user,
-          'expiration' => time() + (86400 * 30),
-      ];
       return JWT::encode($payload, $this->jwtKey, 'HS256');
     }catch (Exception $error) {
       return 'Error new token: ' . $error->getMessage();

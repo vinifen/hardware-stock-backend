@@ -16,7 +16,6 @@ function get_body(){
   return $body;
 }
 
-
 function send_response(bool $status, $content, int $statusCode){
   http_response_code($statusCode);
   echo json_encode([
