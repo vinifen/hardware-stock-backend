@@ -64,7 +64,7 @@ class UsersModel {
     }
   }
 
-  public function selectUserIdByPublicId(string $publicUserId){
+  public function selectUserIdAndUsernameByPublicId(string $publicUserId){
     try{ 
       $stmt = $this->pdo->prepare("SELECT username, id FROM users WHERE public_id = ?");
       $stmt->bindValue(1, $publicUserId, PDO::PARAM_STR);

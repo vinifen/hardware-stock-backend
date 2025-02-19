@@ -3,13 +3,9 @@ namespace app\controllers;
 
 require_once  base_path() . "/app/controllers/handler/handleControllerRequest.php";
 
-use app\database\models\UsersModel;
-use app\database\models\HardwaresModel;
 use app\services\AuthService;
-use core\validation\UserValidator;
 use app\services\UserService;
-use core\exceptions\ClientException;
-use core\exceptions\InternalException;
+
 
 class UserController {
 

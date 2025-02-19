@@ -112,4 +112,23 @@ class AuthService{
     }
   }
 
+  public function verifyUser(string $publicUserId){
+    try {
+      $result = $this->userModel->selectUserIdAndUsernameByPublicId($publicUserId);
+      if(empty($result)){
+        throw new ClientException("User does not exist");
+      }
+      $payload = $this->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+      echo var_dump($payload->public_user_id) . "PAYLOADzzzzzzzzz";
+      if($payload->public_user_id !== $publicUserId){
+        throw new ClientException("Invalid user");
+      }
+      return $result;
+    } catch (ClientException | InternalException $e){
+      throw $e;
+    } catch (\Exception $e) {
+      throw $e;
+    }
+  }
+
 }

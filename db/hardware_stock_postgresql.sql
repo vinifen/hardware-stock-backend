@@ -30,14 +30,15 @@ CREATE TABLE categories (
 CREATE TABLE hardwares (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(200) NOT NULL,
-	price VARCHAR(15),
+	price DECIMAL(10, 3),  
 	users_id INT NOT NULL,
 	FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE,
 	brands_id INT,
-	FOREIGN KEY (brands_id) REFERENCES brands(id) ,
+	FOREIGN KEY (brands_id) REFERENCES brands(id),
 	categories_id INT,
 	FOREIGN KEY (categories_id) REFERENCES categories(id)
 );
+
 
 CREATE TABLE refresh_tokens (
 	uuid CHAR(64) NOT NULL PRIMARY KEY,

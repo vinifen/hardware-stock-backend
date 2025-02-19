@@ -15,9 +15,9 @@ class CategoriesModel {
     $this->pdo = $db->connect();
   }
 
-  public function insert(string $name) {
+  public function insert(string $name, int $userId) {
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO categories (name) VALUES (?)");
+      $stmt = $this->pdo->prepare("INSERT INTO categories (name, users_id) VALUES (? , ?)");
       $stmt->bindValue(1, $name, PDO::PARAM_STR);
       $stmt->execute();
 
