@@ -15,12 +15,18 @@ class HardwaresModel {
     $this->pdo = $db->connect();
   }
 
-  public function insert(string $name, float $price, int $userId = null, int $brandId = null, int $categoryId = null) {
+  public function insert(
+      string $name, 
+      float $price, 
+      string $userId, 
+      int $brandId = null, 
+      int $categoryId = null
+    ) {
     try {
       $stmt = $this->pdo->prepare("INSERT INTO hardwares (name, price, users_id, brands_id, categories_id) VALUES (?, ?, ?, ?, ?)");
       $stmt->bindValue(1, $name, PDO::PARAM_STR);
       $stmt->bindValue(2, $price, PDO::PARAM_STR);
-      $stmt->bindValue(3, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(3, $userId, PDO::PARAM_STR);
       $stmt->bindValue(4, $brandId, PDO::PARAM_INT);
       $stmt->bindValue(5, $categoryId, PDO::PARAM_INT);
 
@@ -95,10 +101,10 @@ class HardwaresModel {
     }
   }
 
-  public function selectAllByUserId(int $userId){
+  public function selectAllByUserId(string $userId){
     try {
       $stmt = $this->pdo->prepare("SELECT * FROM hardwares WHERE users_id = ?");
-      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -117,7 +123,7 @@ class HardwaresModel {
   }
 
 
-  public function selectAllRelatedByUserId(int $userId) {
+  public function selectAllRelatedByUserId(string $userId) {
     echo "PELO AMOR DE DEUS " . $userId;
     try {
       $stmt = $this->pdo->prepare(
@@ -133,7 +139,7 @@ class HardwaresModel {
         LEFT JOIN categories ON hardwares.categories_id = categories.id 
         WHERE hardwares.users_id = ?"
       );
-      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
       
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -273,10 +279,10 @@ class HardwaresModel {
     }
   }
 
-  public function selectTotalPrice($userId) {
+  public function selectTotalPrice(string $userId) {
     try {
       $stmt = $this->pdo->prepare("SELECT SUM(price) AS total_price FROM hardwares WHERE users_id = ?");
-      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);

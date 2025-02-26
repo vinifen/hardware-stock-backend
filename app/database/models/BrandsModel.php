@@ -15,10 +15,11 @@ class BrandsModel {
     $this->pdo = $db->connect();
   }
 
-  public function insert(string $name) {
+  public function insert(string $name, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO brands (name) VALUES (?)");
+      $stmt = $this->pdo->prepare("INSERT INTO brands (name, users_id) VALUES (?,?)");
       $stmt->bindValue(1, $name, PDO::PARAM_STR);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       $lastInsertId = $this->pdo->lastInsertId();

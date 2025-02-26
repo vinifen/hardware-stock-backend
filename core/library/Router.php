@@ -33,7 +33,7 @@ class Router {
 
     $routeInfo = $dispatcher->dispatch($method, $uri);
 
-    print_r($routeInfo);
+    echo print_r($routeInfo);
     switch ($routeInfo[0]){
       case FastRoute\Dispatcher::NOT_FOUND;
         echo "404 Not Found";
@@ -42,6 +42,7 @@ class Router {
         echo "405 Method Not Allowed";
         break;
       case FastRoute\Dispatcher::FOUND;
+        echo $routeInfo;
         $controller = $routeInfo[1][0];
         $functionController = $routeInfo[1][1];
 

@@ -8,11 +8,12 @@ use app\services\CategoryService;
 class CategoryController {
   public function __construct(private CategoryService $categoryService, private AuthService $authService) {}
 
-  public function create($publicUserId) {
-    echo "AQUI EMIM" . var_dump($publicUserId) ."ASDF";
-    handleControllerRequest(function () use ($publicUserId) {
-      $resultAuth = $this->authService->verifyUser($publicUserId);
-      $userId = $resultAuth["id"];
+  
+  //arrumar aqui
+  public function create($userId) {
+    echo "AQUI EMIM" . var_dump($userId) ."ASDF";
+    handleControllerRequest(function () use ($userId) {
+      
       $body = get_body();
       echo "AQUI EMIM" . var_dump($body) ."ASDF";
       $resultHardware = $this->categoryService->create($body["name"], $userId);

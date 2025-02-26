@@ -14,7 +14,7 @@ class UserController {
     private AuthService $authService
   ) {}
 
-
+    // ver aqui
   public function create(){
     
     handleControllerRequest(function (){
@@ -28,23 +28,22 @@ class UserController {
     }, "creating user");
   }
 
-  public function get($publicUserId){
-    handleControllerRequest(function () use ($publicUserId){
-      $body = get_body();
-      $userData = $this->userService->get($publicUserId);
+  public function get($userId){
+    handleControllerRequest(function () use ($userId){
+      $userData = $this->userService->get($userId);
       send_response(true, ["message" => "User data successfully obtained" , "data"=>$userData], 200);
     }, "getting user");
   }
 
-  public function updateUsername($publicUserId){
-    echo $publicUserId . " PublicUserId updateUsername "; 
+  public function updateUsername($userId){
+    echo $userId . " PublicUserId updateUsername "; 
   }
 
-  public function updatePassword($publicUserId){
-    echo $publicUserId . "PublicUserId updatePassword";
+  public function updatePassword($userId){
+    echo $userId . "PublicUserId updatePassword";
   }
 
-  public function delete($publicUserId){
-    echo $publicUserId . " PublicUserId DeleteUser "; 
+  public function delete($userId){
+    echo $userId . " PublicUserId DeleteUser "; 
   }
 }

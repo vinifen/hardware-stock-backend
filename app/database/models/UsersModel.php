@@ -16,12 +16,12 @@ class UsersModel {
     $this->pdo = $db->connect();
   }
 
-  public function insert(string $username, string $password, string $publicUserId) {
+  public function insert(string $username, string $password, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO users (username, password, public_id) VALUES (?, ?, ?)");
+      $stmt = $this->pdo->prepare("INSERT INTO users (username, password, id) VALUES (?, ?, ?)");
       $stmt->bindValue(1, $username, PDO::PARAM_STR);
       $stmt->bindValue(2, $password, PDO::PARAM_STR);
-      $stmt->bindValue(3, $publicUserId, PDO::PARAM_STR);
+      $stmt->bindValue(3, $userId, PDO::PARAM_STR);
   
       $stmt->execute(); 
       
@@ -64,35 +64,35 @@ class UsersModel {
     }
   }
 
-  public function selectUserIdAndUsernameByPublicId(string $publicUserId){
-    try{ 
-      $stmt = $this->pdo->prepare("SELECT username, id FROM users WHERE public_id = ?");
-      $stmt->bindValue(1, $publicUserId, PDO::PARAM_STR);
-      $stmt->execute();
+  // public function selectUserIdAndUsernameByPublicId(string $publicUserId){
+  //   try{ 
+  //     $stmt = $this->pdo->prepare("SELECT username, id FROM users WHERE public_id = ?");
+  //     $stmt->bindValue(1, $publicUserId, PDO::PARAM_STR);
+  //     $stmt->execute();
 
-      $result = $stmt->fetch(PDO::FETCH_ASSOC);
+  //     $result = $stmt->fetch(PDO::FETCH_ASSOC);
       
-      if(empty($result)){
+  //     if(empty($result)){
 
-        echo "No data found for user with public user id: " . $publicUserId;
+  //       echo "No data found for user with public user id: " . $publicUserId;
 
-        return null;
-      }
+  //       return null;
+  //     }
 
-      echo print_r($result) . " TEST DB - Select by public user id";
+  //     echo print_r($result) . " TEST DB - Select by public user id";
 
-      return $result;
+  //     return $result;
 
-    }catch (\PDOException $e){
-      throw new InternalException("Error retrieving user ID by public user Id: " . $e->getMessage());
-    }
-  }
+  //   }catch (\PDOException $e){
+  //     throw new InternalException("Error retrieving user ID by public user Id: " . $e->getMessage());
+  //   }
+  // }
 
 
-  public function select(int $userId){
+  public function select(string $userId){
     try {
       $stmt = $this->pdo->prepare("SELECT public_id, created_at, username, id FROM users WHERE id = ?");
-      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -111,10 +111,10 @@ class UsersModel {
   }
 
 
-  public function selectPassword(int $userId){
+  public function selectPassword(string $userId){
     try {
       $stmt = $this->pdo->prepare("SELECT password FROM users WHERE id = ?");
-      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
       
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -135,10 +135,10 @@ class UsersModel {
   }
 
 
-  public function delete(int $userId): bool {
+  public function delete(string $userId): bool {
     try { 
       $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
-      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
@@ -152,11 +152,11 @@ class UsersModel {
   }
 
 
-  public function alterUsername(int $userId, string $newUsername): bool {
+  public function alterUsername(string $userId, string $newUsername): bool {
     try {
       $stmt = $this->pdo->prepare("UPDATE users SET username = ? WHERE id = ?");
       $stmt->bindValue(1, $newUsername, PDO::PARAM_STR);
-      $stmt->bindValue(2, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
@@ -170,11 +170,11 @@ class UsersModel {
   }
 
 
-  public function alterPassword(int $userId, string $newPassword): bool {
+  public function alterPassword(string $userId, string $newPassword): bool {
     try {
       $stmt = $this->pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
       $stmt->bindValue(1, $newPassword, PDO::PARAM_STR);
-      $stmt->bindValue(2, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {

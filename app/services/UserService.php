@@ -19,9 +19,9 @@ class UserService {
         throw new ClientException("User already exists");
       }
 
-      $publicUserId = Uuid::uuid7();
-      echo $publicUserId;
-      $this->userModel->insert($username, $hashPassword, $publicUserId);
+      $userId = Uuid::uuid7();
+      echo $userId;
+      $this->userModel->insert($username, $hashPassword, $userId);
 
       return "User successfully created with";
     } catch (ClientException | InternalException $e) {
@@ -31,14 +31,9 @@ class UserService {
     }
   }
 
-  public function get(string $publicUserId){
+  public function get(string $userId){
     try {
-      $result = $this->userModel->selectUserIdAndUsernameByPublicId($publicUserId);
-      if(empty($result)){
-        throw new ClientException("User not found");
-      }
-      echo var_dump($result) . "VARDUM GET" . $publicUserId;
-      $userData = $this->userModel->select($result["id"]);
+      $userData = $this->userModel->select($userId);
       unset($userDatap["id"]);
       return $userData;
       echo "GET USER SERVICE ok";
@@ -48,7 +43,5 @@ class UserService {
       throw new InternalException("[Get user]: " . $e->getMessage());
     }
   } 
-
- 
 
 }
