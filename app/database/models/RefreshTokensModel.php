@@ -14,12 +14,12 @@ class RefreshTokensModel {
     $this->pdo = $db->connect();
   }
 
-  public function insert(string $token, int $userId, string $rtUuid): bool {
+  public function insert(string $token, string $userId, string $rtId): bool {
     try {
       $expiresAt = date('Y-m-d H:i:s', strtotime('+7 days'));
-      $stmt = $this->pdo->prepare("INSERT INTO refresh_tokens (uuid, users_id, token, expires_at) VALUES (?, ?, ?, ?)");
-      $stmt->bindValue(1, $rtUuid, PDO::PARAM_STR);
-      $stmt->bindValue(2, $userId, PDO::PARAM_INT);
+      $stmt = $this->pdo->prepare("INSERT INTO refresh_tokens (id, users_id, token, expires_at) VALUES (?, ?, ?, ?)");
+      $stmt->bindValue(1, $rtId, PDO::PARAM_STR);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->bindValue(3, $token, PDO::PARAM_STR);
       $stmt->bindValue(4, $expiresAt, PDO::PARAM_STR);
       
@@ -29,7 +29,7 @@ class RefreshTokensModel {
         throw new ClientException("Failed to insert refresh token.");
       }
       
-      echo "Refresh token inserted with ID: " . $rtUuid;
+      echo "Refresh token inserted with ID: " . $rtId;
       
       return true;
     } catch (\PDOException $e) {
@@ -38,17 +38,17 @@ class RefreshTokensModel {
   }
 
 
-  public function select(string $rtUuid, int $userId): ?array {
+  public function select(string $rtId, string $userId): ?array {
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM refresh_tokens WHERE uuid = ? AND users_id = ?");
-      $stmt->bindValue(1, $rtUuid, PDO::PARAM_STR);
+      $stmt = $this->pdo->prepare("SELECT * FROM refresh_tokens WHERE id = ? AND users_id = ?");
+      $stmt->bindValue(1, $rtId, PDO::PARAM_STR);
       $stmt->bindValue(1, $userId, PDO::PARAM_INT);
       $stmt->execute();
       
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
       
       if (empty($result)) {
-        echo "No data found for refresh token with ID: " . $rtUuid;
+        echo "No data found for refresh token with ID: " . $rtId;
         return null;
       }
       
@@ -61,18 +61,18 @@ class RefreshTokensModel {
   }
 
 
-  public function delete(string $rtUuid): bool {
+  public function delete(string $rtId): bool {
     try {
-      $stmt = $this->pdo->prepare("DELETE FROM refresh_tokens WHERE uuid = ?");
-      $stmt->bindValue(1, $rtUuid, PDO::PARAM_STR);
+      $stmt = $this->pdo->prepare("DELETE FROM refresh_tokens WHERE id = ?");
+      $stmt->bindValue(1, $rtId, PDO::PARAM_STR);
       $stmt->execute();
       
       if ($stmt->rowCount() === 0) {
-        echo "No refresh token found with ID: " . $rtUuid;
+        echo "No refresh token found with ID: " . $rtId;
         throw new ClientException("Refresh token not found.");
       }
       
-      echo "Refresh token with ID: " . $rtUuid . " deleted successfully.";
+      echo "Refresh token with ID: " . $rtId . " deleted successfully.";
       
       return true;
     } catch (\PDOException $e) {

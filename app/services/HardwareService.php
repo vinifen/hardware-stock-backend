@@ -13,7 +13,7 @@ class HardwareService {
   public function create(
     string $name, 
     float $price, 
-    int $userId = null,
+    string $userId,
     int $brandId = null,
     int $categoryId = null
   ) {

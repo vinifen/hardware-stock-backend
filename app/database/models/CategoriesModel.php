@@ -15,10 +15,11 @@ class CategoriesModel {
     $this->pdo = $db->connect();
   }
 
-  public function insert(string $name, int $userId) {
+  public function insert(string $name, string $userId) {
     try {
       $stmt = $this->pdo->prepare("INSERT INTO categories (name, users_id) VALUES (? , ?)");
       $stmt->bindValue(1, $name, PDO::PARAM_STR);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       $lastInsertId = $this->pdo->lastInsertId();
@@ -52,10 +53,10 @@ class CategoriesModel {
     }
   }
 
-  public function selectAllUserId(int $userId){
+  public function selectAllUserId(string $userId){
     try {
       $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE users_id = ?");
-      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

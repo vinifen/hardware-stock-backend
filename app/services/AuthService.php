@@ -25,7 +25,7 @@ class AuthService{
     $this->jwtRefreshHandler = $container->get(JwtHandler::class . 'refresh');
   }
 
-  public function login($username, $password, $payload = []) {
+  public function login(string $username, string $password, array $payload = []) {
     try { 
       $result = $this->verifyUsername($username);
       $userId = $result["id"];
@@ -41,9 +41,9 @@ class AuthService{
       $refreshToken = $this->jwtRefreshHandler->encodeToken(JwtUtils::generateRefreshPayload($payload));
 
       $hashRefreshToken = hash('sha256', $refreshToken);
-      $rtUuid = Uuid::uuid7();
+      $rtId = Uuid::uuid7();
       
-      $this->refreshTokensModel->insert($hashRefreshToken, $userId, $rtUuid);
+      $this->refreshTokensModel->insert($hashRefreshToken, $userId, $rtId);
       return [
         'sessionToken' => $sessionToken,
         'refreshToken' => $refreshToken,
@@ -55,9 +55,9 @@ class AuthService{
     }
   }
 
-  private function tokensPayload($userData, $payload = []){
+  private function tokensPayload(array $userData, array $payload = []){
     $payload = array_merge([
-      "public_user_id"=>$userData["public_id"],
+      "user_id"=>$userData["public_id"],
       "username"=>$userData["username"]
     ], $payload);
     return $payload;
@@ -84,7 +84,7 @@ class AuthService{
     }
   }
 
-  public function verifyPassword(string $password, int $userId){
+  public function verifyPassword(string $password, string $userId){
     try{ 
       UserValidator::password($password);
       echo "AQUIASDFAS";
@@ -112,23 +112,23 @@ class AuthService{
     }
   }
 
-  public function verifyUser(string $publicUserId){
-    try {
-      $result = $this->userModel->selectUserIdAndUsernameByPublicId($publicUserId);
-      if(empty($result)){
-        throw new ClientException("User does not exist");
-      }
-      $payload = $this->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
-      echo var_dump($payload->public_user_id) . "PAYLOADzzzzzzzzz";
-      if($payload->public_user_id !== $publicUserId){
-        throw new ClientException("Invalid user");
-      }
-      return $result;
-    } catch (ClientException | InternalException $e){
-      throw $e;
-    } catch (\Exception $e) {
-      throw $e;
-    }
-  }
+  // public function verifyUser(string $publicUserId){
+  //   try {
+  //     $result = $this->userModel->selectUserIdAndUsernameByPublicId($publicUserId);
+  //     if(empty($result)){
+  //       throw new ClientException("User does not exist");
+  //     }
+  //     $payload = $this->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+  //     echo var_dump($payload->public_user_id) . "PAYLOADzzzzzzzzz";
+  //     if($payload->public_user_id !== $publicUserId){
+  //       throw new ClientException("Invalid user");
+  //     }
+  //     return $result;
+  //   } catch (ClientException | InternalException $e){
+  //     throw $e;
+  //   } catch (\Exception $e) {
+  //     throw $e;
+  //   }
+  // }
 
 }
