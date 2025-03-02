@@ -2,6 +2,7 @@
 
 namespace core\validation;
 use core\exceptions\ClientException;
+use core\exceptions\InternalException;
 
 class HardwareValidator {
   static public function name(string $name) {
@@ -11,10 +12,16 @@ class HardwareValidator {
     }
   }
 
-  static public function price(string $price) {
-    $regexPrice = "/^[0-9., ]{1,10}$/";
-    if (!preg_match($regexPrice, $price)) {
-      throw new ClientException("Invalid price. It must contain only numbers, '.', ',', and spaces, with a maximum of 10 characters.");
+  static public function price(float $price) {
+    if (!is_float($price)) {
+      throw new InternalException("Invalid price. It must be a float.");
+    }
+  
+    $priceString = (string) $price;
+  
+    if (strlen($priceString) > 10) {
+      throw new ClientException("Invalid price. It must be a float with a maximum of 10 characters.");
     }
   }
+  
 }

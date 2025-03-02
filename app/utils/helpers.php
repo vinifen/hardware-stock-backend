@@ -8,7 +8,6 @@ function base_path(){
 
 function get_body(){
   $body = json_decode(file_get_contents('php://input'), true);
-
   if (empty($body)) {
     throw new ClientException("No data sent");
   }

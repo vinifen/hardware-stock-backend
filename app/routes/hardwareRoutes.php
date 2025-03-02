@@ -21,5 +21,5 @@ function hardwareRoutes(RouteCollector $router) {
   
   $router->addRoute('DELETE', '/hardwares/{hardware_id:\d+}', [HardwareController::class, 'delete', AuthMiddleware::class, 'handle']);
 
-  $router->addRoute('GET', '/hardwares/aggregate/price', [HardwareController::class, 'getTotalPrice', AuthMiddleware::class, 'handle']);
+  // $router->addRoute('GET', '/hardwares/aggregate/price', [HardwareController::class, 'getTotalPrice', AuthMiddleware::class, 'handle']);
 }

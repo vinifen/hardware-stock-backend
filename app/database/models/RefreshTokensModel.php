@@ -38,11 +38,12 @@ class RefreshTokensModel {
   }
 
 
-  public function select(string $rtId, string $userId): ?array {
+  public function select(string $rtId, string $userId){
+    echo "AROZ " . $rtId . "brocilis ". $userId;
     try {
       $stmt = $this->pdo->prepare("SELECT * FROM refresh_tokens WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $rtId, PDO::PARAM_STR);
-      $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
       
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -51,9 +52,7 @@ class RefreshTokensModel {
         echo "No data found for refresh token with ID: " . $rtId;
         return null;
       }
-      
-      echo print_r($result, true) . " TEST DB - Select refresh token ID";
-      
+     
       return $result;
     } catch (\PDOException $e) {
       throw new InternalException("Error retrieving refresh token: " . $e->getMessage());

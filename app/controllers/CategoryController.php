@@ -33,6 +33,7 @@ class CategoryController {
   }
 
   public function getAllByUserId() {
+    echo "OLAAAAAAAAAA";
     handleController(function () {
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
       $result = $this->categoryService->getAllByUserId($stPayload->user_id);

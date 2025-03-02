@@ -91,7 +91,7 @@ class UsersModel {
 
   public function select(string $userId){
     try {
-      $stmt = $this->pdo->prepare("SELECT public_id, created_at, username, id FROM users WHERE id = ?");
+      $stmt = $this->pdo->prepare("SELECT created_at, username, id FROM users WHERE id = ?");
       $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
 

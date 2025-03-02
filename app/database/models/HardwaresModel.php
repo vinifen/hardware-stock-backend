@@ -19,8 +19,8 @@ class HardwaresModel {
       string $name, 
       float $price, 
       string $userId, 
-      int $brandId = null, 
-      int $categoryId = null
+      ?int $brandId = null, 
+      ?int $categoryId = null
     ) {
     try {
       $stmt = $this->pdo->prepare("INSERT INTO hardwares (name, price, users_id, brands_id, categories_id) VALUES (?, ?, ?, ?, ?)");
@@ -87,21 +87,23 @@ class HardwaresModel {
       );
       $stmt->bindValue(1, $hardwareId, PDO::PARAM_INT);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
+      $stmt->execute();
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
       if (empty($result)) {
-        echo "No data found for related hardware with brands and categories with ID: " . $hardwareId;
+        echo "No data found for related hardware with ID: " . $hardwareId . " and user ID: " . $userId;
         return null;
       }
 
-      echo print_r($result) . " TEST DB - Select related hardware with brands and categories by hardware ID";
+      echo print_r($result, true) . " TEST DB - Select related hardware with brands and categories by hardware ID";
       return $result;
 
     } catch (\PDOException $e) {
-      throw new InternalException("Error retrieving related hardware with brands and categories with ID: " . $e->getMessage());
+      throw new InternalException("Error retrieving related hardware: " . $e->getMessage());
     }
   }
+
 
   public function selectAllByUserId(string $userId){
     try {
@@ -126,8 +128,9 @@ class HardwaresModel {
 
 
   public function selectAllRelatedByUserId(string $userId) {
-    echo "PELO AMOR DE DEUS " . $userId;
+    echo "teste 5";
     try {
+      error_log("aqui em selectAllRelatedByUserId");
       $stmt = $this->pdo->prepare(
         "SELECT 
           hardwares.id AS hardware_id, 

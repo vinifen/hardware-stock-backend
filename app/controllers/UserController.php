@@ -5,6 +5,7 @@ require_once  base_path() . "/app/controllers/handler/handleController.php";
 
 use app\services\AuthService;
 use app\services\UserService;
+use app\utils\JwtUtils;
 
 
 class UserController {
@@ -42,6 +43,27 @@ class UserController {
       $this->authService->verifyPassword($body["password"], $stPayload->user_id);
 
       $this->userService->updateUsername($stPayload->user_id, $body["newUsername"]);
+
+      $this->authService->removeRefreshToken($_COOKIE["token2"]);
+
+      // IDEIA: AQUI ao invez de remover o refresh token pensar em fazer o rt nao carregar informcoes mutaveis como o username, mantendo o refresh token e renovando só o session token 
+
+      $newTokens = $this->authService->getNewTokens($stPayload->user_id);
+      
+      setcookie("token1", $newTokens["sessionToken"], [
+        'expires'=>JwtUtils::sessionExpiration(),
+        'path'=>'/',
+        'secure'=>false,
+        'httponly'=>true
+      ]);
+
+      setcookie("token2", $newTokens["refreshToken"], [
+        'expires'=>JwtUtils::refreshExpiration(),
+        'path'=>'/',
+        'secure'=>false,
+        'httponly'=>true
+      ]);
+
       send_response(true, ["message" => "Username successfully updated."], 200);
     }, "updating username.");
   }
@@ -55,6 +77,22 @@ class UserController {
 
       $hashPassword = $this->authService->encryptPassword($body["password"]);
       $this->userService->updatePassword($stPayload->user_id, $hashPassword);
+
+      $newTokens = $this->authService->getNewTokens($stPayload->user_id);
+
+      setcookie("token1", $newTokens["sessionToken"], [
+        'expires'=>JwtUtils::sessionExpiration(),
+        'path'=>'/',
+        'secure'=>false,
+        'httponly'=>true
+      ]);
+
+      setcookie("token2", $newTokens["refreshToken"], [
+        'expires'=>JwtUtils::refreshExpiration(),
+        'path'=>'/',
+        'secure'=>false,
+        'httponly'=>true
+      ]);
       
       send_response(true, ["message" => "Password successfully updated."], 200);
     }, "updating password.");

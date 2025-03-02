@@ -23,6 +23,7 @@ class JwtHandler{
   }
 
   public function decodeToken($token) {
+    echo "teste 2";
     try {
       $decoded = JWT::decode($token, new Key($this->jwtKey, 'HS256'));
 

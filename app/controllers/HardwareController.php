@@ -13,7 +13,6 @@ class HardwareController {
     handleController(function () {
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
       $body = get_body();
-
       $resultHardware = $this->hardwareService->create($body["name"], $body["price"], $stPayload->user_id, $body["brand_id"], $body["category_id"]);
 
       send_response(true, ["message"=>$resultHardware], 201);
@@ -51,9 +50,12 @@ class HardwareController {
 
   public function getAllRelatedByUser() {
     handleController(function () {
+      echo "teste 1";
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+      echo "teste 3";
+ 
       $result = $this->hardwareService->getAllRelatedByUserId($stPayload->user_id);
-
+      echo "teste 6";
       send_response(true, ["message"=>"Related Hardware data successfully obtained", "data"=>$result], 200);
     }, "getting hardware");
   }

@@ -2,9 +2,7 @@
 namespace app\services;
 
 use app\database\models\HardwaresModel;
-use app\database\models\UsersModel;
 use core\exceptions\ClientException;
-use core\exceptions\InternalException;
 use core\validation\HardwareValidator;
 
 class HardwareService {
@@ -14,8 +12,8 @@ class HardwareService {
     string $name, 
     float $price, 
     string $userId,
-    int $brandId = null,
-    int $categoryId = null
+    ?int $brandId = null,
+    ?int $categoryId = null
   ) {
     try{ 
       HardwareValidator::name($name);
@@ -65,14 +63,14 @@ class HardwareService {
     }
   }
 
-  public function getAllRelatedByUserId(int $userId) {
+  public function getAllRelatedByUserId(string $userId) {
     try{ 
+      echo "teste 4";
       $result = $this->hardwareModel->selectAllRelatedByUserId($userId);
       if(empty($result)){
         throw new ClientException("No related hardware found for this user");
       }
       return $result;
-      echo "GET ALL RELATED HARDWARE SERVICE ok";
     } catch (\Exception $e){
       throw $e;
     }

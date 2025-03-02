@@ -42,7 +42,6 @@ class Router {
         echo "405 Method Not Allowed";
         break;
       case FastRoute\Dispatcher::FOUND;
-        echo $routeInfo;
         $controller = $routeInfo[1][0];
         $functionController = $routeInfo[1][1];
 
