@@ -47,10 +47,11 @@ class HardwaresModel {
   }
   
 
-  public function select(string $hardwareId) {
+  public function select(int $hardwareId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM hardwares WHERE id = ?");
+      $stmt = $this->pdo->prepare("SELECT * FROM hardwares WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $hardwareId, PDO::PARAM_INT);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -69,7 +70,7 @@ class HardwaresModel {
   }
 
 
-  public function selectRelated(int $hardwareId) {
+  public function selectRelated(int $hardwareId, string $userId) {
     try {
       $stmt = $this->pdo->prepare(
         "SELECT 
@@ -82,9 +83,10 @@ class HardwaresModel {
         FROM hardwares 
         INNER JOIN brands ON hardwares.brands_id = brands.id 
         INNER JOIN categories ON hardwares.categories_id = categories.id 
-        WHERE hardwares.id = ?"
+        WHERE hardwares.id = ? AND hardwares.users_id = ?"
       );
       $stmt->bindValue(1, $hardwareId, PDO::PARAM_INT);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -158,10 +160,11 @@ class HardwaresModel {
   }
 
 
-  public function delete(int $hardwareId) {
+  public function delete(int $hardwareId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("DELETE FROM hardwares WHERE id = ?");
+      $stmt = $this->pdo->prepare("DELETE FROM hardwares WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $hardwareId, PDO::PARAM_INT);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
@@ -176,11 +179,12 @@ class HardwaresModel {
     }
   }
 
-  public function alterPrice(int $hardwareId, float $newPrice) {
+  public function alterPrice(int $hardwareId, float $newPrice, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("UPDATE hardwares SET price = ? WHERE id = ?");
+      $stmt = $this->pdo->prepare("UPDATE hardwares SET price = ? WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $newPrice, PDO::PARAM_STR);
       $stmt->bindValue(2, $hardwareId, PDO::PARAM_INT);
+      $stmt->bindValue(3, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
@@ -196,11 +200,12 @@ class HardwaresModel {
   }
 
 
-  public function alterName(int $hardwareId, string $newName) {
+  public function alterName(int $hardwareId, string $newName, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("UPDATE hardwares SET name = ? WHERE id = ?");
+      $stmt = $this->pdo->prepare("UPDATE hardwares SET name = ? WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $newName, PDO::PARAM_STR);
       $stmt->bindValue(2, $hardwareId, PDO::PARAM_INT);
+      $stmt->bindValue(3, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
@@ -216,11 +221,12 @@ class HardwaresModel {
   }
 
 
-  public function alterBrandId(int $hardwareId, int $brandId) {
+  public function alterBrandId(int $hardwareId, int $brandId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("UPDATE hardwares SET brands_id = ? WHERE id = ?");
+      $stmt = $this->pdo->prepare("UPDATE hardwares SET brands_id = ? WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $brandId, PDO::PARAM_INT);
       $stmt->bindValue(2, $hardwareId, PDO::PARAM_INT);
+      $stmt->bindValue(3, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() > 0) {
@@ -236,11 +242,12 @@ class HardwaresModel {
   }
 
 
-  public function alterCategoryId(int $hardwareId, int $categoryId) {
+  public function alterCategoryId(int $hardwareId, int $categoryId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("UPDATE hardwares SET categories_id = ? WHERE id = ?");
+      $stmt = $this->pdo->prepare("UPDATE hardwares SET categories_id = ? WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
       $stmt->bindValue(2, $hardwareId, PDO::PARAM_INT);
+      $stmt->bindValue(3, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() > 0) {
@@ -255,49 +262,25 @@ class HardwaresModel {
     }
   }
 
-  public function selectAveragePriceByCategory() {
-    try {
-      $stmt = $this->pdo->prepare(
-        "SELECT categories.name AS category_name, AVG(hardwares.price) AS avg_price
-          FROM hardwares
-          INNER JOIN categories ON hardwares.categories_id = categories.id
-          GROUP BY categories.name"
-      );
-      $stmt->execute();
+  // public function selectTotalPrice(string $userId) {
+  //   try {
+  //     $stmt = $this->pdo->prepare("SELECT SUM(price) AS total_price FROM hardwares WHERE users_id = ?");
+  //     $stmt->bindValue(1, $userId, PDO::PARAM_STR);
+  //     $stmt->execute();
 
-      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  //     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-      if (empty($result)) {
-        echo "No data found for average price by category.";
-        return null;
-      }
+  //   if (empty($result) || $result['total_price'] === null) {
+  //     echo "No hardware prices found.";
+  //     return 0;
+  //   }
 
-      return $result;
+  //   return $result['total_price'];
 
-    } catch (\PDOException $e) {
-      throw new InternalException("Error retrieving average price by category: " . $e->getMessage());
-    }
-  }
-
-  public function selectTotalPrice(string $userId) {
-    try {
-      $stmt = $this->pdo->prepare("SELECT SUM(price) AS total_price FROM hardwares WHERE users_id = ?");
-      $stmt->bindValue(1, $userId, PDO::PARAM_STR);
-      $stmt->execute();
-
-      $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (empty($result) || $result['total_price'] === null) {
-      echo "No hardware prices found.";
-      return 0;
-    }
-
-    return $result['total_price'];
-
-  } catch (\PDOException $e) {
-    throw new InternalException("Error retrieving total price: " . $e->getMessage());
-  }
-}
+  //   } catch (\PDOException $e) {
+  //     throw new InternalException("Error retrieving total price: " . $e->getMessage());
+  //   }
+  // }
 
 
 
