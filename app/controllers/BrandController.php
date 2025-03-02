@@ -25,8 +25,12 @@ class BrandController {
     }, "getting brand.");
   }
 
-  public function getAllByUserId($userId) {
-    echo "Fetching all brands for user ID: $userId";
+  public function getAllByUserId() {
+    handleController(function () {
+      $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+      $result = $this->brandService->getAllByUserId($stPayload->user_id);
+      send_response(true, ["message" => "All brands data successfully obtained.", "data" => $result], 200);
+    }, "getting all brands.");
   }
 
   public function update($brandsId) {

@@ -45,6 +45,13 @@ class UserService {
   public function updateUsername(string $userId, string $newUsername){
     try {
       UserValidator::username($newUsername);
+      $hasUser = $this->userModel->selectUsernameAndUserIdByUsername($newUsername);
+      if($hasUser !== null){
+        throw new ClientException("Username already registered");
+      }
+
+      
+
       $this->userModel->alterUsername($userId, $newUsername);
       return "Username successfully updated";
     } catch (\Exception $e){

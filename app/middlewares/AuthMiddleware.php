@@ -2,8 +2,6 @@
 namespace app\middlewares;
 
 use app\services\AuthService;
-use core\library\JwtHandler;
-use Psr\Container\ContainerInterface;
 
 class AuthMiddleware {
 
@@ -12,7 +10,6 @@ class AuthMiddleware {
   ) {}
 
   public function handle() {
-
     $statusSession = null;
     $sessionToken = $_COOKIE["token1"];
     echo var_dump($sessionToken) . "AQUI COOKIE";
@@ -51,8 +48,9 @@ class AuthMiddleware {
 
     if($statusSession === false){
       $content = ["stStatus" => $statusSession, "rtStatus" => $statusRefresh, "message" => $message];
-      send_response(false, $content, 400);
+      send_response(false, $content, 401);
+      exit;
     }
-
+   
   }
 }

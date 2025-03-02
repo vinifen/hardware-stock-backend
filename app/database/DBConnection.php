@@ -29,8 +29,7 @@ class DBConnection {
       echo "Postgresql connected";
       return $pdo;
     } catch (Exception $e) {
-      echo "Error connect Postgresql: " . $e->getMessage();
-      return null;
+      throw new \Exception("Error connecting to Postgresql: " . $e->getMessage());
     }
   }
 

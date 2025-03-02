@@ -1,16 +1,13 @@
 <?php
 namespace app\services;
 
-require_once  base_path() . "/app/services/handler/handleService.php";
 
 use app\database\models\RefreshTokensModel;
 use app\database\models\UsersModel;
 use core\library\JwtHandler;
 use Psr\Container\ContainerInterface;
 use core\exceptions\ClientException;
-use core\exceptions\InternalException;
 use core\validation\UserValidator;
-use Ramsey\Uuid\Uuid;
 use app\utils\JwtUtils;
 
 
@@ -26,41 +23,6 @@ class AuthService{
     $this->jwtSessionHandler = $container->get(JwtHandler::class . 'session');
     $this->jwtRefreshHandler = $container->get(JwtHandler::class . 'refresh');
   }
-
-  public function login(string $username, string $password) {
-    try { 
-      $result = $this->verifyUsername($username);
-      $userId = $result["id"];
-
-      $this->verifyPassword($password, $userId);
-
-      $userData = $this->userModel->select($userId);
-
-      $payloadUser = [
-        "user_id"=>$userData["id"],
-        "username"=>$userData["username"]
-      ];
-      
-
-      $sessionToken = $this->jwtSessionHandler->encodeToken(JwtUtils::generateSessionPayload($payloadUser));
-      $refreshToken = $this->createRefreshToken($payloadUser);
-
-      return [
-        'sessionToken' => $sessionToken,
-        'refreshToken' => $refreshToken,
-      ];
-    } catch (\Exception $e) {
-      throw $e;
-    }
-  }
-
-  // private function tokensUserPayload(array $data){
-  //   $payload = [
-  //     "user_id"=>$data["id"],
-  //     "username"=>$data["username"]
-  //   ];
-  //   return $payload;
-  // } 
 
   private function createRefreshToken($payloadData){
     try {
@@ -82,6 +44,7 @@ class AuthService{
 
   public function verifyUsername(string $username){
     try {
+      UserValidator::username($username);
       $result = $this->userModel->selectUsernameAndUserIdByUsername($username);
       if(empty($result) || $result["username"] !== $username){
         throw new ClientException("User does not exist");
@@ -97,6 +60,7 @@ class AuthService{
 
   public function verifyPassword(string $password, string $userId){
     try{ 
+      UserValidator::password($password);
       echo "AQUIASDFAS";
       $hashPassword = $this->userModel->selectPassword($userId);
       if(!password_verify($password, $hashPassword)){
@@ -128,15 +92,18 @@ class AuthService{
   }
 
   public function verifyRefreshToken(string $refreshToken){
+    echo  "chego";
     try {
       $rtPayload = $this->jwtRefreshHandler->decodeToken($refreshToken);
       $resultRefreshToken = $this->refreshTokensModel->select($rtPayload->token_id, $rtPayload->user_id);
+
       if(empty($resultRefreshToken)){
         throw new ClientException("Invalid refresh token");
       }
       if($resultRefreshToken["token"] !== hash('sha256', $refreshToken)){
         throw new ClientException("Invalid refresh token");
       }
+      
       return $rtPayload;
     } catch (\Exception $e){
       throw $e;
@@ -163,6 +130,41 @@ class AuthService{
       throw $e;
     }
   }
+
+  // public function login(string $username, string $password) {
+  //   try { 
+  //     $result = $this->verifyUsername($username);
+  //     $userId = $result["id"];
+
+  //     $this->verifyPassword($password, $userId);
+
+  //     $userData = $this->userModel->select($userId);
+
+  //     $payloadUser = [
+  //       "user_id"=>$userData["id"],
+  //       "username"=>$userData["username"]
+  //     ];
+      
+
+  //     $sessionToken = $this->jwtSessionHandler->encodeToken(JwtUtils::generateSessionPayload($payloadUser));
+  //     $refreshToken = $this->createRefreshToken($payloadUser);
+
+  //     return [
+  //       'sessionToken' => $sessionToken,
+  //       'refreshToken' => $refreshToken,
+  //     ];
+  //   } catch (\Exception $e) {
+  //     throw $e;
+  //   }
+  // }
+
+  // private function tokensUserPayload(array $data){
+  //   $payload = [
+  //     "user_id"=>$data["id"],
+  //     "username"=>$data["username"]
+  //   ];
+  //   return $payload;
+  // } 
 
   // public function verifyUser(string $publicUserId){
   //   try {

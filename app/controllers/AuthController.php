@@ -5,18 +5,23 @@ namespace app\controllers;
 require_once  base_path() . "/app/controllers/handler/handleController.php";
 
 use app\services\AuthService;
-use app\services\UserService;
 use app\utils\JwtUtils;
 use core\exceptions\ClientException;
 use core\exceptions\InternalException;
 
 class AuthController {
-  public function __construct(private AuthService $authService, private UserService $userService) {}
+  public function __construct(private AuthService $authService) {}
 
   public function login() {
     handleController(function () {
       $body = get_body();
-      $result = $this->authService->login($body["username"], $body["password"]);
+
+      $resultUsername = $this->authService->verifyUsername($body["username"]);
+      $userId = $resultUsername["id"];
+
+      $this->authService->verifyPassword($body["password"], $userId);
+
+      $result = $this->authService->getNewTokens($userId);
       
       setcookie("token1", $result["sessionToken"], [
         'expires'=>JwtUtils::sessionExpiration(),
@@ -37,12 +42,13 @@ class AuthController {
     }, "loggin in");
 
   }
-
+  
   public function getNewSession() {
     handleController(function (){ 
+      echo "teste 1";
       $resultVerify = $this->authService->verifyRefreshToken($_COOKIE["token2"]);
-
-      $newTokens = $this->authService->getNewTokens($resultVerify["user_id"]); 
+      echo "ASIERUIUHACACHORRROOO" . var_dump( $resultVerify->user_id);
+      $newTokens = $this->authService->getNewTokens($resultVerify->user_id); 
 
       $this->authService->removeRefreshToken($_COOKIE["token2"]);
       
