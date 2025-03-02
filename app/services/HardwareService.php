@@ -8,7 +8,7 @@ use core\exceptions\InternalException;
 use core\validation\HardwareValidator;
 
 class HardwareService {
-  public function __construct(private HardwaresModel $hardwareModel) {}
+  public function __construct(public HardwaresModel $hardwareModel) {}
 
   public function create(
     string $name, 
@@ -22,30 +22,35 @@ class HardwareService {
       HardwareValidator::price($price);
       $this->hardwareModel->insert($name, $price, $userId, $brandId, $categoryId);
       return "Hardware successfully created";
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
     } catch (\Exception $e){
       throw $e;
     }
   }
 
-  public function get($hardwareId) {
+  public function get(int $hardwareId, string $userId) {
     try{ 
-      $result = $this->hardwareModel->select($hardwareId);
+      $result = $this->hardwareModel->select($hardwareId, $userId);
       if(empty($result)){
         throw new ClientException("Hardware not found");
       }
       return $result;
       echo "GET HARDWARE SERVICE ok";
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
     } catch (\Exception $e){
       throw $e;
     }
   }
 
-  public function getRelated($hardwareId) {
-    echo "GET /hardwares/related/{$hardwareId} - Param: " . $hardwareId;
+  public function getRelated(int $hardwareId, string $userId) {
+    try{ 
+      $result = $this->hardwareModel->selectRelated($hardwareId, $userId);
+      if(empty($result)){
+        throw new ClientException("No related hardware found");
+      }
+      return $result;
+      echo "GET RELATED HARDWARE SERVICE ok";
+    } catch (\Exception $e){
+      throw $e;
+    }
   }
 
   public function getAllByUserId($userId) {
@@ -55,8 +60,6 @@ class HardwareService {
         throw new ClientException("No hardware found for this user");
       }
       return $result;
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
     } catch (\Exception $e){
       throw $e;
     }
@@ -70,69 +73,63 @@ class HardwareService {
       }
       return $result;
       echo "GET ALL RELATED HARDWARE SERVICE ok";
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
     } catch (\Exception $e){
       throw $e;
     }
   }
 
-  public function updateName($hardwareId, $newName) {
+  public function updateName(int $hardwareId, string $newName, string $userId) {
     try {
       HardwareValidator::name($newName);
-      $this->hardwareModel->alterName($hardwareId, $newName);
+      $this->hardwareModel->alterName($hardwareId, $newName, $userId);
       return "Hardware name updated successfully";
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
     } catch (\Exception $e){
       throw $e;
     }
   }
 
-  public function updateBrand($hardwareId, $brandId) {
-    try{
-      $this->hardwareModel->alterBrandId($hardwareId, $brandId);
-      return "Hardware brand updated successfully";
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
-    } catch (\Exception $e){
-      throw $e;
-    }
-  }
+  // public function updateBrand($hardwareId, $brandId, $userId) {
+  //   try{
+  //     $this->hardwareModel->alterBrandId($hardwareId, $brandId, $userId);
+  //     return "Hardware brand updated successfully";
+  //   } catch (\Exception $e){
+  //     throw $e;
+  //   }
+  // }
 
-  public function updateCategory(int $hardwareId, $categoryId) {
-    try{
-      $this->hardwareModel->alterCategoryId($hardwareId, $categoryId);
-      return "Hardware category updated successfully";
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
-    } catch (\Exception $e){
-      throw $e;
-    }
-  }
+  // public function updateCategory(int $hardwareId, $categoryId) {
+  //   try{
+  //     $this->hardwareModel->alterCategoryId($hardwareId, $categoryId);
+  //     return "Hardware category updated successfully";
+  //   } catch (ClientException | InternalException $e) {
+  //     throw $e; 
+  //   } catch (\Exception $e){
+  //     throw $e;
+  //   }
+  // }
 
-  public function getFullPrice($userId){
-    try{
-      $result = $this->hardwareModel->selectTotalPrice($userId);
-      if(empty($result)){
-        throw new ClientException("No hardware prices found for this user");
-      }
-      return $result;
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
-    } catch (\Exception $e){
-      throw $e;
-    }
-  }
+  // public function getFullPrice($userId){
+  //   try{
+  //     $result = $this->hardwareModel->selectTotalPrice($userId);
+  //     if(empty($result)){
+  //       throw new ClientException("No hardware prices found for this user");
+  //     }
+  //     return $result;
+  //   } catch (ClientException | InternalException $e) {
+  //     throw $e; 
+  //   } catch (\Exception $e){
+  //     throw $e;
+  //   }
+  // }
 
-  public function delete($hardwareId) {
-    try{ 
-      $this->hardwareModel->delete($hardwareId);
-      return "Hardware deleted successfully";
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
-    } catch (\Exception $e){
-      throw $e;
-    }
-  }
+  // public function delete($hardwareId) {
+  //   try{ 
+  //     $this->hardwareModel->delete($hardwareId);
+  //     return "Hardware deleted successfully";
+  //   } catch (ClientException | InternalException $e) {
+  //     throw $e; 
+  //   } catch (\Exception $e){
+  //     throw $e;
+  //   }
+  // }
 }

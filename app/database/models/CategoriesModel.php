@@ -34,10 +34,11 @@ class CategoriesModel {
     }
   }
 
-  public function select(int $categoryId) {
+  public function select(int $categoryId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE id = ?");
+      $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -72,11 +73,12 @@ class CategoriesModel {
     }
   }
 
-  public function alter(int $categoryId, string $newName): bool {
+  public function alter(int $categoryId, string $newName, string $userId): bool {
     try {
-      $stmt = $this->pdo->prepare("UPDATE categories SET name = ? WHERE id = ?");
+      $stmt = $this->pdo->prepare("UPDATE categories SET name = ? WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $newName, PDO::PARAM_STR);
       $stmt->bindValue(2, $categoryId, PDO::PARAM_INT);
+      $stmt->bindValue(3, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
@@ -91,10 +93,11 @@ class CategoriesModel {
     }
   }
 
-  public function delete(int $categoryId): bool {
+  public function delete(int $categoryId, string $userId): bool {
     try {
-      $stmt = $this->pdo->prepare("DELETE FROM categories WHERE id = ?");
+      $stmt = $this->pdo->prepare("DELETE FROM categories WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
+      $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {

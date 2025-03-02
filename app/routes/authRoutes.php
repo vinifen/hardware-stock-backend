@@ -8,6 +8,6 @@ use app\middlewares\AuthMiddleware;
 function authRoutes(RouteCollector $router) {
   $router->addRoute("POST", "/auth/login", [AuthController::class, "login"]);
 
-  $router->addRoute("POST", "/auth/{userId}/refresh-token", [AuthController::class, "requestRefreshToken"]);
-  $router->addRoute("DELETE", "/auth/{userId}/logout", [AuthController::class, "logout", ]);
+  $router->addRoute("POST", "/auth/refresh-token", [AuthController::class, "getNewSession"]);
+  $router->addRoute("DELETE", "/auth/logout", [AuthController::class, "logout", ]);
 }

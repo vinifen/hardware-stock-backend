@@ -2,17 +2,27 @@
 
 namespace app\controllers;
 
-use app\database\models\BrandsModel;
+use app\services\AuthService;
+use app\services\BrandService;
 
 class BrandController {
-  public function __construct(private BrandsModel $brandModel) {}
+  public function __construct(private AuthService $authService, private BrandService $brandService) {}
 
   public function create() {
-    echo "Creating a new brand.";
+    handleController(function () {
+      $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+      $body = get_body();
+      $result = $this->brandService->create($body["name"], $stPayload->user_id);
+      send_response(true, ["message" => $result], 201);
+    }, "creating brand.");
   }
 
   public function get($brandsId) {
-    echo "Fetching brand with ID: $brandsId";
+    handleController(function () use ($brandsId) {
+      $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+      $result = $this->brandService->get($brandsId, $stPayload->user_id);
+      send_response(true, ["message" => "Brand data successfully obtained.", "data" => $result], 200);
+    }, "getting brand.");
   }
 
   public function getAllByUserId($userId) {
@@ -20,10 +30,19 @@ class BrandController {
   }
 
   public function update($brandsId) {
-    echo "Updating brand with ID: $brandsId";
+    handleController(function () use ($brandsId) {
+      $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+      $body = get_body();
+      $result = $this->brandService->updateName($brandsId, $body["name"], $stPayload->user_id);
+      send_response(true, ["message" => $result], 200);
+    }, "updating brand.");
   }
 
   public function delete($brandsId) {
-    echo "Deleting brand with ID: $brandsId";
+    handleController(function () use ($brandsId) {
+      $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+      $this->brandService->brandModel->delete($brandsId, $stPayload->user_id);
+      send_response(true, ["message" => "Brand successfully deleted."], 200);
+    }, "deleting brand.");
   }
 }

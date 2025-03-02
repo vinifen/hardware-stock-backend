@@ -22,5 +22,4 @@ function send_response(bool $status, $content, int $statusCode){
     "status" => $status,
     "content" => $content
   ]);
-  exit;
 }

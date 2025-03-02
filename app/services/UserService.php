@@ -9,7 +9,7 @@ use core\exceptions\ClientException;
 use core\exceptions\InternalException;
 
 class UserService {
-  public function __construct(private UsersModel $userModel) {}
+  public function __construct(public UsersModel $userModel) {}
 
   function createUser(string $username, string $hashPassword){
     try { 
@@ -24,24 +24,42 @@ class UserService {
       $this->userModel->insert($username, $hashPassword, $userId);
 
       return "User successfully created with";
-    } catch (ClientException | InternalException $e) {
-      throw $e; 
     } catch (\Exception $e){
       throw $e;
     }
   }
 
-  public function get(string $userId){
+  public function getUserData(string $userId){
     try {
       $userData = $this->userModel->select($userId);
-      unset($userDatap["id"]);
+      if(empty($userData)){
+        throw new ClientException("User not found");
+      }
       return $userData;
       echo "GET USER SERVICE ok";
-    } catch (ClientException $e) {
-      throw new ClientException($e->getMessage());
-    } catch (InternalException $e){
-      throw new InternalException("[Get user]: " . $e->getMessage());
+    } catch (\Exception $e){
+      throw $e;
     }
   } 
+
+  public function updateUsername(string $userId, string $newUsername){
+    try {
+      UserValidator::username($newUsername);
+      $this->userModel->alterUsername($userId, $newUsername);
+      return "Username successfully updated";
+    } catch (\Exception $e){
+      throw $e;
+    }
+  }
+
+  public function updatePassword(string $userId, string $newPassword){
+    try {
+      UserValidator::password($newPassword);
+      $this->userModel->alterPassword($userId, $newPassword);
+      return "Password successfully updated";
+    } catch (\Exception $e){
+      throw $e;
+    }
+  }
 
 }

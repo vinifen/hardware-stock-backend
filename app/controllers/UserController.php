@@ -1,7 +1,7 @@
 <?php
 namespace app\controllers;
 
-require_once  base_path() . "/app/controllers/handler/handleControllerRequest.php";
+require_once  base_path() . "/app/controllers/handler/handleController.php";
 
 use app\services\AuthService;
 use app\services\UserService;
@@ -14,10 +14,8 @@ class UserController {
     private AuthService $authService
   ) {}
 
-    // ver aqui
   public function create(){
-    
-    handleControllerRequest(function (){
+    handleController(function (){
       $body = get_body();
 
       $hashPassword = $this->authService->encryptPassword($body["password"]);
@@ -25,25 +23,56 @@ class UserController {
       $result = $this->userService->createUser($body["username"], $hashPassword);
       
       send_response(true, ["message" => $result], 200);
-    }, "creating user");
+    }, "creating user.");
   }
 
-  public function get($userId){
-    handleControllerRequest(function () use ($userId){
-      $userData = $this->userService->get($userId);
-      send_response(true, ["message" => "User data successfully obtained" , "data"=>$userData], 200);
-    }, "getting user");
+  public function get(){
+    handleController(function (){
+      $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+      $userData = $this->userService->getUserData($stPayload->user_id);
+      send_response(true, ["message" => "User data successfully obtained." , "data"=>$userData], 200);
+    }, "getting user.");
   }
 
-  public function updateUsername($userId){
-    echo $userId . " PublicUserId updateUsername "; 
+  public function updateUsername(){
+    handleController(function (){
+      $body = get_body();
+      $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+
+      $this->authService->verifyPassword($body["password"], $stPayload->user_id);
+
+      $this->userService->updateUsername($stPayload->user_id, $body["newUsername"]);
+      send_response(true, ["message" => "Username successfully updated."], 200);
+    }, "updating username.");
   }
 
-  public function updatePassword($userId){
-    echo $userId . "PublicUserId updatePassword";
+  public function updatePassword(){
+    handleController(function () {
+      $body = get_body();
+      $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+
+      $this->authService->verifyPassword($body["password"], $stPayload->user_id);
+
+      $hashPassword = $this->authService->encryptPassword($body["password"]);
+      $this->userService->updatePassword($stPayload->user_id, $hashPassword);
+      
+      send_response(true, ["message" => "Password successfully updated."], 200);
+    }, "updating password.");
   }
 
-  public function delete($userId){
-    echo $userId . " PublicUserId DeleteUser "; 
+  public function delete(){
+    handleController(function (){
+      $body = get_body();
+      $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+      
+      $this->authService->verifyPassword($body["password"], $stPayload->user_id);
+
+      $this->userService->userModel->delete($stPayload->user_id);
+
+      setcookie("token1", "", time() - 9999 * 100, "/");
+      setcookie("token2", "", time() - 9999 * 100, "/");
+
+      send_response(true, ["message" => "User successfully deleted."], 200);
+    }, "deleting user.");
   }
 }

@@ -2,7 +2,7 @@
 namespace core\library;
 use Firebase\JWT\Key;
 use \Firebase\JWT\JWT;
-use Exception;
+use core\exceptions\InternalException;
 
 class JwtHandler{ 
 
@@ -17,7 +17,7 @@ class JwtHandler{
   public function encodeToken($payload) {
     try{ 
       return JWT::encode($payload, $this->jwtKey, 'HS256');
-    }catch (Exception $error) {
+    }catch (InternalException $error) {
       return 'Error new token: ' . $error->getMessage();
     }
   }
@@ -27,7 +27,7 @@ class JwtHandler{
       $decoded = JWT::decode($token, new Key($this->jwtKey, 'HS256'));
 
       return $decoded;
-    } catch (Exception $error) {
+    } catch (InternalException $error) {
       return 'Invalid token: ' . $error->getMessage();
     }
   }
