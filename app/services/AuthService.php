@@ -112,10 +112,8 @@ class AuthService{
 
   public function getNewTokens(string $userId){
     try {
-      $userData = $this->userModel->select($userId);
       $payloadUser = [
-        "user_id"=>$userData["id"],
-        "username"=>$userData["username"]
+        "user_id"=>$userId,
       ];
       
       $sessionToken = $this->jwtSessionHandler->encodeToken(JwtUtils::generateSessionPayload($payloadUser));

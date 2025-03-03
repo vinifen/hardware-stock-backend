@@ -14,9 +14,8 @@ class CategoryController {
   public function create() {
     handleController(function () {
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
-      $body = get_body();
+      $body = get_body(["name"]);
 
-      echo "AQUI EMIM" . var_dump($body) . var_dump($stPayload) ."ASDF";
       $resultHardware = $this->categoryService->create($body["name"], $stPayload->user_id);
       send_response(true, ["message"=>$resultHardware], 201);
     }, "creating hardware");
@@ -33,9 +32,9 @@ class CategoryController {
   }
 
   public function getAllByUserId() {
-    echo "OLAAAAAAAAAA";
     handleController(function () {
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
+
       $result = $this->categoryService->getAllByUserId($stPayload->user_id);
 
       send_response(true, ["message"=>"Category data successfully obtained.", "data"=>$result], 200);
@@ -45,9 +44,10 @@ class CategoryController {
   public function update($categoriesId) {
     handleController(function () use ($categoriesId) {
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
-      $body = get_body();
+      $body = get_body(["name"]);
 
       $result = $this->categoryService->updateName($categoriesId, $body["name"], $stPayload->user_id);
+
       send_response(true, ["message"=>$result], 200);
     }, "updating category.");
   }
@@ -57,7 +57,9 @@ class CategoryController {
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
 
       $this->categoryService->categoriesModel->delete($categoriesId, $stPayload->user_id);
+      
       send_response(true, ["message"=>"Category successfully deleted."], 200);
     }, "deleting category.");
   }
+  
 }

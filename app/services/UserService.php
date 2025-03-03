@@ -6,7 +6,6 @@ use Ramsey\Uuid\Uuid;
 use app\database\models\UsersModel;
 use core\validation\UserValidator;
 use core\exceptions\ClientException;
-use core\exceptions\InternalException;
 
 class UserService {
   public function __construct(public UsersModel $userModel) {}
@@ -23,7 +22,7 @@ class UserService {
       echo $userId;
       $this->userModel->insert($username, $hashPassword, $userId);
 
-      return "User successfully created with";
+      return "User successfully created";
     } catch (\Exception $e){
       throw $e;
     }
@@ -49,8 +48,6 @@ class UserService {
       if($hasUser !== null){
         throw new ClientException("Username already registered");
       }
-
-      
 
       $this->userModel->alterUsername($userId, $newUsername);
       return "Username successfully updated";

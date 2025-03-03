@@ -111,4 +111,5 @@ class CategoriesModel {
       throw new InternalException("Error deleting category with ID $categoryId: " . $e->getMessage());
     }
   }
+  
 }

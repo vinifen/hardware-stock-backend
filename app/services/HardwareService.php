@@ -1,21 +1,28 @@
 <?php
 namespace app\services;
 
+use app\database\models\BrandsModel;
+use app\database\models\CategoriesModel;
 use app\database\models\HardwaresModel;
 use core\exceptions\ClientException;
 use core\validation\HardwareValidator;
 
 class HardwareService {
-  public function __construct(public HardwaresModel $hardwareModel) {}
+  public function __construct(
+    public HardwaresModel $hardwareModel, 
+    private BrandsModel $brandModel,
+    private CategoriesModel $categoryModel 
+  ) {}
 
   public function create(
     string $name, 
     float $price, 
     string $userId,
-    ?int $brandId = null,
-    ?int $categoryId = null
+    ?int $brandId,
+    ?int $categoryId
   ) {
     try{ 
+      echo $categoryId . "TESTE";
       HardwareValidator::name($name);
       HardwareValidator::price($price);
       $this->hardwareModel->insert($name, $price, $userId, $brandId, $categoryId);
@@ -82,6 +89,27 @@ class HardwareService {
       $this->hardwareModel->alterName($hardwareId, $newName, $userId);
       return "Hardware name updated successfully";
     } catch (\Exception $e){
+      throw $e;
+    }
+  }
+
+  public function checkHardwareRelated(?int $brand_id, ?int $category_id, string $userId) {
+    try {
+      
+      if(!empty($brand_id)){ 
+        $brand = $this->brandModel->select($brand_id, $userId);
+        if(empty($brand)){
+          throw new ClientException("Brand not found");
+        }
+      }
+      if(!empty($category_id)){
+        $category = $this->categoryModel->select($category_id, $userId);
+        if(empty($category)){
+          throw new ClientException("Category not found");
+        }
+      }
+      return "Hardware related successfully";
+    } catch (\Exception $e) {
       throw $e;
     }
   }

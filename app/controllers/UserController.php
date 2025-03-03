@@ -17,7 +17,7 @@ class UserController {
 
   public function create(){
     handleController(function (){
-      $body = get_body();
+      $body = get_body(["username", "password"]);
 
       $hashPassword = $this->authService->encryptPassword($body["password"]);
 
@@ -37,32 +37,12 @@ class UserController {
 
   public function updateUsername(){
     handleController(function (){
-      $body = get_body();
+      $body = get_body(["newUsername", "password"]);
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
 
       $this->authService->verifyPassword($body["password"], $stPayload->user_id);
 
       $this->userService->updateUsername($stPayload->user_id, $body["newUsername"]);
-
-      $this->authService->removeRefreshToken($_COOKIE["token2"]);
-
-      // IDEIA: AQUI ao invez de remover o refresh token pensar em fazer o rt nao carregar informcoes mutaveis como o username, mantendo o refresh token e renovando só o session token 
-
-      $newTokens = $this->authService->getNewTokens($stPayload->user_id);
-      
-      setcookie("token1", $newTokens["sessionToken"], [
-        'expires'=>JwtUtils::sessionExpiration(),
-        'path'=>'/',
-        'secure'=>false,
-        'httponly'=>true
-      ]);
-
-      setcookie("token2", $newTokens["refreshToken"], [
-        'expires'=>JwtUtils::refreshExpiration(),
-        'path'=>'/',
-        'secure'=>false,
-        'httponly'=>true
-      ]);
 
       send_response(true, ["message" => "Username successfully updated."], 200);
     }, "updating username.");
@@ -70,29 +50,13 @@ class UserController {
 
   public function updatePassword(){
     handleController(function () {
-      $body = get_body();
+      $body = get_body(["password", "newPassword"]);
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
 
       $this->authService->verifyPassword($body["password"], $stPayload->user_id);
 
-      $hashPassword = $this->authService->encryptPassword($body["password"]);
-      $this->userService->updatePassword($stPayload->user_id, $hashPassword);
-
-      $newTokens = $this->authService->getNewTokens($stPayload->user_id);
-
-      setcookie("token1", $newTokens["sessionToken"], [
-        'expires'=>JwtUtils::sessionExpiration(),
-        'path'=>'/',
-        'secure'=>false,
-        'httponly'=>true
-      ]);
-
-      setcookie("token2", $newTokens["refreshToken"], [
-        'expires'=>JwtUtils::refreshExpiration(),
-        'path'=>'/',
-        'secure'=>false,
-        'httponly'=>true
-      ]);
+      $hashNewPassword = $this->authService->encryptPassword($body["newPassword"]);
+      $this->userService->updatePassword($stPayload->user_id, $hashNewPassword);
       
       send_response(true, ["message" => "Password successfully updated."], 200);
     }, "updating password.");
@@ -100,7 +64,9 @@ class UserController {
 
   public function delete(){
     handleController(function (){
-      $body = get_body();
+      $body = get_body(["password"]);
+      
+
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
       
       $this->authService->verifyPassword($body["password"], $stPayload->user_id);
@@ -113,4 +79,5 @@ class UserController {
       send_response(true, ["message" => "User successfully deleted."], 200);
     }, "deleting user.");
   }
+
 }

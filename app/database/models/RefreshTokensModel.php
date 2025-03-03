@@ -29,8 +29,6 @@ class RefreshTokensModel {
         throw new ClientException("Failed to insert refresh token.");
       }
       
-      echo "Refresh token inserted with ID: " . $rtId;
-      
       return true;
     } catch (\PDOException $e) {
       throw new InternalException("Error inserting refresh token: " . $e->getMessage());
@@ -39,7 +37,6 @@ class RefreshTokensModel {
 
 
   public function select(string $rtId, string $userId){
-    echo "AROZ " . $rtId . "brocilis ". $userId;
     try {
       $stmt = $this->pdo->prepare("SELECT * FROM refresh_tokens WHERE id = ? AND users_id = ?");
       $stmt->bindValue(1, $rtId, PDO::PARAM_STR);
