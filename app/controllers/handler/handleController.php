@@ -18,4 +18,5 @@ function handleController(callable $callback, string $contextError){
   } finally {
     exit;
   }
+  
 }

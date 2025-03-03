@@ -113,4 +113,5 @@ class BrandsModel {
       throw new InternalException("Error deleting brand with ID $brandId: " . $e->getMessage());
     }
   }
+  
 }

@@ -1,7 +1,6 @@
 <?php
 namespace app\controllers;
 require_once  base_path() . "/app/controllers/handler/handleController.php";
-use app\database\models\HardwaresModel;
 use app\services\AuthService;
 use app\services\HardwareService;
 
@@ -12,7 +11,16 @@ class HardwareController {
   public function create() {
     handleController(function () {
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
-      $body = get_body();
+      $body = get_body(["name", "price"]);
+
+      if (!isset($body["brand_id"])) {
+        $body["brand_id"] = null;
+      }
+      if (!isset($body["category_id"])) {
+        $body["category_id"] = null;
+      }
+      
+      $this->hardwareService->checkHardwareRelated($body["brand_id"], $body["category_id"], $stPayload->user_id);
       $resultHardware = $this->hardwareService->create($body["name"], $body["price"], $stPayload->user_id, $body["brand_id"], $body["category_id"]);
 
       send_response(true, ["message"=>$resultHardware], 201);
@@ -62,7 +70,7 @@ class HardwareController {
 
   public function updateName($hardwareId) {
     handleController(function () use ($hardwareId) {
-      $body = get_body();
+      $body = get_body(["name"]);
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
 
       $result = $this->hardwareService->updateName($hardwareId, $body["name"], $stPayload->user_id);
@@ -73,7 +81,7 @@ class HardwareController {
 
   public function updateBrand(int $hardwareId) {
     handleController(function () use ($hardwareId) {
-      $body = get_body();
+      $body = get_body(["brand_id"]);
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
 
       $this->hardwareService->hardwareModel->alterBrandId($hardwareId, $body["brand_id"], $stPayload->user_id);
@@ -84,7 +92,7 @@ class HardwareController {
 
   public function updateCategory(int $hardwareId) {
     handleController(function () use ($hardwareId) {
-      $body = get_body();
+      $body = get_body(["category_id"]);
       $stPayload = $this->authService->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
 
       $this->hardwareService->hardwareModel->alterCategoryId($hardwareId, $body["category_id"], $stPayload->user_id);
@@ -104,7 +112,5 @@ class HardwareController {
 
     }, "deleting hardware.");
   }
-
-
 
 }

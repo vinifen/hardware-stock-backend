@@ -5,19 +5,6 @@ use Ramsey\Uuid\Uuid;
 
 class JwtUtils {
     
-  // public static function generateSessionPayload(array $userData, $payload = []): array {
-  //   $finalPayload = array_merge(
-  //     [
-  //       "public_user_id" => $userData["public_id"],
-  //       "username" => $userData["username"],
-  //     ],
-  //     $payload
-  //   );
-
-  //   $stUuid = Uuid::uuid7(); 
-  //   return array_merge($finalPayload, ["token_id" => $stUuid]);
-  // }
-
   public static function generateSessionPayload($data = [], $expiration = null): array {
     $expiration = $expiration ?? self::sessionExpiration();
     $stUuid = Uuid::uuid7(); 

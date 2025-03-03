@@ -64,31 +64,6 @@ class UsersModel {
     }
   }
 
-  // public function selectUserIdAndUsernameByPublicId(string $publicUserId){
-  //   try{ 
-  //     $stmt = $this->pdo->prepare("SELECT username, id FROM users WHERE public_id = ?");
-  //     $stmt->bindValue(1, $publicUserId, PDO::PARAM_STR);
-  //     $stmt->execute();
-
-  //     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-      
-  //     if(empty($result)){
-
-  //       echo "No data found for user with public user id: " . $publicUserId;
-
-  //       return null;
-  //     }
-
-  //     echo print_r($result) . " TEST DB - Select by public user id";
-
-  //     return $result;
-
-  //   }catch (\PDOException $e){
-  //     throw new InternalException("Error retrieving user ID by public user Id: " . $e->getMessage());
-  //   }
-  // }
-
-
   public function select(string $userId){
     try {
       $stmt = $this->pdo->prepare("SELECT created_at, username, id FROM users WHERE id = ?");

@@ -14,7 +14,7 @@ class AuthController {
 
   public function login() {
     handleController(function () {
-      $body = get_body();
+      $body = get_body(["username", "password"]);
 
       $resultUsername = $this->authService->verifyUsername($body["username"]);
       $userId = $resultUsername["id"];
@@ -46,6 +46,9 @@ class AuthController {
   public function getNewSession() {
     handleController(function (){ 
       echo "teste 1";
+      if(!isset($_COOKIE["token2"])){
+        throw new ClientException("No token found.");
+      }
       $resultVerify = $this->authService->verifyRefreshToken($_COOKIE["token2"]);
       echo "ASIERUIUHACACHORRROOO" . var_dump( $resultVerify->user_id);
       $newTokens = $this->authService->getNewTokens($resultVerify->user_id); 
@@ -90,4 +93,5 @@ class AuthController {
       exit;
     }
   }
+  
 }

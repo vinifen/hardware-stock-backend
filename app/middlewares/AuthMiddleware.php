@@ -12,7 +12,7 @@ class AuthMiddleware {
   public function handle() {
     $statusSession = null;
     $sessionToken = $_COOKIE["token1"];
-    echo var_dump($sessionToken) . "AQUI COOKIE";
+    
     if(!empty($sessionToken)){
       try {
         $this->authService->jwtSessionHandler->decodeToken($sessionToken);

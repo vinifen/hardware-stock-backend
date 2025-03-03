@@ -19,16 +19,17 @@ class HardwaresModel {
       string $name, 
       float $price, 
       string $userId, 
-      ?int $brandId = null, 
-      ?int $categoryId = null
+      ?int $brandId, 
+      ?int $categoryId
     ) {
     try {
       $stmt = $this->pdo->prepare("INSERT INTO hardwares (name, price, users_id, brands_id, categories_id) VALUES (?, ?, ?, ?, ?)");
       $stmt->bindValue(1, $name, PDO::PARAM_STR);
       $stmt->bindValue(2, $price, PDO::PARAM_STR);
       $stmt->bindValue(3, $userId, PDO::PARAM_STR);
-      $stmt->bindValue(4, $brandId, PDO::PARAM_INT);
-      $stmt->bindValue(5, $categoryId, PDO::PARAM_INT);
+      $stmt->bindValue(4, $brandId ?? null, is_null($brandId) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+      $stmt->bindValue(5, $categoryId ?? null, is_null($categoryId) ? PDO::PARAM_NULL : PDO::PARAM_INT);
+
 
       $stmt->execute(); 
 
@@ -49,7 +50,14 @@ class HardwaresModel {
 
   public function select(int $hardwareId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM hardwares WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare(
+        "SELECT 
+          name AS hardware_name,
+          price,
+          categories_id AS category_id,
+          brands_id AS brand_id
+         FROM hardwares WHERE id = ? AND users_id = ?"
+      );
       $stmt->bindValue(1, $hardwareId, PDO::PARAM_INT);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
@@ -194,7 +202,6 @@ class HardwaresModel {
         throw new ClientException("Hardware not found or price is the same.");
       }
 
-      echo "Price updated successfully for hardware ID: " . $hardwareId;
       return true;
 
     } catch (\PDOException $e) {
@@ -264,27 +271,5 @@ class HardwaresModel {
       throw new InternalException("Error updating the categories_id for hardware: " . $e->getMessage());
     }
   }
-
-  // public function selectTotalPrice(string $userId) {
-  //   try {
-  //     $stmt = $this->pdo->prepare("SELECT SUM(price) AS total_price FROM hardwares WHERE users_id = ?");
-  //     $stmt->bindValue(1, $userId, PDO::PARAM_STR);
-  //     $stmt->execute();
-
-  //     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-  //   if (empty($result) || $result['total_price'] === null) {
-  //     echo "No hardware prices found.";
-  //     return 0;
-  //   }
-
-  //   return $result['total_price'];
-
-  //   } catch (\PDOException $e) {
-  //     throw new InternalException("Error retrieving total price: " . $e->getMessage());
-  //   }
-  // }
-
-
 
 }

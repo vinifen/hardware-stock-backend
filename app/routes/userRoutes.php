@@ -7,13 +7,14 @@ use app\middlewares\AuthMiddleware;
 
 function userRoutes(RouteCollector $router) {
 
-  $router->addRoute('POST', '/users', [UserController::class, 'create']);
-  
-  $router->addRoute('GET', '/users', [UserController::class, 'get', AuthMiddleware::class, 'handle']);
+  $router->addGroup('/users', function(RouteCollector $router) {
+    $router->addRoute('POST', '', [UserController::class, 'create']);
 
-  $router->addRoute('PATCH', '/users/username', [UserController::class, 'updateUsername', AuthMiddleware::class, 'handle']);
-  $router->addRoute('PATCH', '/users/password', [UserController::class, 'updatePassword', AuthMiddleware::class, 'handle']);
+    $router->addRoute('GET', '', [UserController::class, 'get', AuthMiddleware::class, 'handle']);
 
-  $router->addRoute('DELETE', '/users', [UserController::class, 'delete', AuthMiddleware::class, 'handle']);
-
+    $router->addRoute('PATCH', '/username', [UserController::class, 'updateUsername', AuthMiddleware::class, 'handle']); 
+    $router->addRoute('PATCH', '/password', [UserController::class, 'updatePassword', AuthMiddleware::class, 'handle']);
+    
+    $router->addRoute('DELETE', '', [UserController::class, 'delete', AuthMiddleware::class, 'handle']);
+  });
 }
