@@ -22,11 +22,10 @@ class HardwareService {
     ?int $categoryId
   ) {
     try{ 
-      echo $categoryId . "TESTE";
       HardwareValidator::name($name);
       HardwareValidator::price($price);
       $this->hardwareModel->insert($name, $price, $userId, $brandId, $categoryId);
-      return "Hardware successfully created";
+      return "Hardware successfully created.";
     } catch (\Exception $e){
       throw $e;
     }
@@ -36,10 +35,9 @@ class HardwareService {
     try{ 
       $result = $this->hardwareModel->select($hardwareId, $userId);
       if(empty($result)){
-        throw new ClientException("Hardware not found");
+        throw new ClientException("Hardware not found.");
       }
       return $result;
-      echo "GET HARDWARE SERVICE ok";
     } catch (\Exception $e){
       throw $e;
     }
@@ -49,10 +47,10 @@ class HardwareService {
     try{ 
       $result = $this->hardwareModel->selectRelated($hardwareId, $userId);
       if(empty($result)){
-        throw new ClientException("No related hardware found");
+        throw new ClientException("No related hardware found.");
       }
       return $result;
-      echo "GET RELATED HARDWARE SERVICE ok";
+
     } catch (\Exception $e){
       throw $e;
     }
@@ -62,7 +60,7 @@ class HardwareService {
     try{ 
       $result = $this->hardwareModel->selectAllByUserId($userId);
       if(empty($result)){
-        throw new ClientException("No hardware found for this user");
+        throw new ClientException("No hardware found for this user.");
       }
       return $result;
     } catch (\Exception $e){
@@ -72,10 +70,9 @@ class HardwareService {
 
   public function getAllRelatedByUserId(string $userId) {
     try{ 
-      echo "teste 4";
       $result = $this->hardwareModel->selectAllRelatedByUserId($userId);
       if(empty($result)){
-        throw new ClientException("No related hardware found for this user");
+        throw new ClientException("No related hardware found for this user.");
       }
       return $result;
     } catch (\Exception $e){
@@ -87,7 +84,7 @@ class HardwareService {
     try {
       HardwareValidator::name($newName);
       $this->hardwareModel->alterName($hardwareId, $newName, $userId);
-      return "Hardware name updated successfully";
+      return "Hardware name updated successfully.";
     } catch (\Exception $e){
       throw $e;
     }
@@ -99,16 +96,16 @@ class HardwareService {
       if(!empty($brand_id)){ 
         $brand = $this->brandModel->select($brand_id, $userId);
         if(empty($brand)){
-          throw new ClientException("Brand not found");
+          throw new ClientException("Brand not found.");
         }
       }
       if(!empty($category_id)){
         $category = $this->categoryModel->select($category_id, $userId);
         if(empty($category)){
-          throw new ClientException("Category not found");
+          throw new ClientException("Category not found.");
         }
       }
-      return "Hardware related successfully";
+      return "Hardware related successfully.";
     } catch (\Exception $e) {
       throw $e;
     }

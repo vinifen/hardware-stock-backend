@@ -9,11 +9,7 @@ use \PDO;
 class BrandsModel {
   private PDO $pdo;
 
-  public function __construct(DBConnection $db)
-  {
-    echo "construct Brand Model";
-    $this->pdo = $db->connect();
-  }
+  public function __construct(DBConnection $db) { $this->pdo = $db->connect(); }
 
   public function insert(string $name, string $userId) {
     try {
@@ -26,9 +22,8 @@ class BrandsModel {
       if (empty($lastInsertId)) {
         throw new ClientException("Failed to insert brand. Please check your input.");
       }
-
-      echo "Brand inserted with ID: " . $lastInsertId;
       return $lastInsertId;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error inserting brand: " . $e->getMessage());
     }
@@ -44,12 +39,10 @@ class BrandsModel {
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
       if (empty($result)) {
-        echo "No data found for brand with ID: " . $brandId;
         return null;
       }
-
-      echo print_r($result, true) . " TEST DB - Select Brand";
       return $result;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error retrieving brand data for brand ID: " . $e->getMessage());
     }
@@ -64,12 +57,10 @@ class BrandsModel {
 
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
       if (empty($result)) {
-        echo "No data found for brand with user ID: " . $userId;
         return null;
       }
-
-      echo print_r($result, true) . " TEST DB - Select Brand";
       return $result;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error retrieving brand data for user ID: " . $e->getMessage());
     }
@@ -87,9 +78,8 @@ class BrandsModel {
       if ($stmt->rowCount() === 0) {
         throw new ClientException("Brand not found or name is the same.");
       }
-
-      echo "Brand name updated successfully for brand ID: " . $brandId;
       return true;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error updating brand name for brand ID $brandId: " . $e->getMessage());
     }
@@ -106,9 +96,8 @@ class BrandsModel {
       if ($stmt->rowCount() === 0) {
         throw new ClientException("Brand not found.");
       }
-
-      echo "Brand with ID: " . $brandId . " deleted successfully.";
       return true;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error deleting brand with ID $brandId: " . $e->getMessage());
     }

@@ -9,11 +9,7 @@ use core\exceptions\InternalException;
 class HardwaresModel {
   private PDO $pdo;
 
-  public function __construct(DBConnection $db)
-  {
-    echo "Construct Hardware Model";
-    $this->pdo = $db->connect();
-  }
+  public function __construct(DBConnection $db) { $this->pdo = $db->connect(); }
 
   public function insert(
       string $name, 
@@ -30,7 +26,6 @@ class HardwaresModel {
       $stmt->bindValue(4, $brandId ?? null, is_null($brandId) ? PDO::PARAM_NULL : PDO::PARAM_INT);
       $stmt->bindValue(5, $categoryId ?? null, is_null($categoryId) ? PDO::PARAM_NULL : PDO::PARAM_INT);
 
-
       $stmt->execute(); 
 
       $lastInsertId = $this->pdo->lastInsertId();
@@ -38,8 +33,6 @@ class HardwaresModel {
       if (empty($lastInsertId)) {
         throw new ClientException("Failed to insert hardware. Please check your data.");
       }
-
-      echo "Hardware inserted with ID: " . $lastInsertId;
       return $lastInsertId;
 
     } catch (\PDOException $e) {
@@ -65,11 +58,8 @@ class HardwaresModel {
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
       if (empty($result)) {
-        echo "No data found for hardware with ID: " . $hardwareId;
         return null;
       }
-
-      echo print_r($result) . " TEST DB - Select hardware ID";
       return $result;
 
     } catch (\PDOException $e) {
@@ -100,11 +90,8 @@ class HardwaresModel {
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
       if (empty($result)) {
-        echo "No data found for related hardware with ID: " . $hardwareId . " and user ID: " . $userId;
         return null;
       }
-
-      echo print_r($result, true) . " TEST DB - Select related hardware with brands and categories by hardware ID";
       return $result;
 
     } catch (\PDOException $e) {
@@ -122,11 +109,8 @@ class HardwaresModel {
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
       if (empty($result)) {
-        echo "No hardwares found for user with ID: " . $userId;
         return null;
       }
-
-      echo print_r($result) . " TEST DB - Select hardwares for user ID";
       return $result;
 
     } catch (\PDOException $e) {
@@ -136,7 +120,6 @@ class HardwaresModel {
 
 
   public function selectAllRelatedByUserId(string $userId) {
-    echo "teste 5";
     try {
       error_log("aqui em selectAllRelatedByUserId");
       $stmt = $this->pdo->prepare(
@@ -158,11 +141,8 @@ class HardwaresModel {
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
       
       if (empty($result)) {
-        echo "No hardwares found for user with ID: " . $userId . " related to brands and categories.";
         return null;
       }
-      
-      echo print_r($result) . " TEST DB - Select hardwares for user ID with brands and categories";
       return $result;
         
     } catch (\PDOException $e) {
@@ -181,8 +161,6 @@ class HardwaresModel {
       if ($stmt->rowCount() === 0) {
         throw new ClientException("Hardware not found.");
       }
-
-      echo "Hardware with ID: " . $hardwareId . " deleted successfully.";
       return true;
 
     } catch (\PDOException $e) {
@@ -221,8 +199,6 @@ class HardwaresModel {
       if ($stmt->rowCount() === 0) {
         throw new ClientException("Hardware not found or name is the same.");
       }
-
-      echo "Name updated successfully for hardware ID: " . $hardwareId;
       return true;
 
     } catch (\PDOException $e) {
@@ -240,12 +216,10 @@ class HardwaresModel {
       $stmt->execute();
 
       if ($stmt->rowCount() > 0) {
-        echo "Brand ID for hardware with ID {$hardwareId} has been updated to {$brandId}.";
         return true;
-      } else {
-        echo "No hardware found with ID {$hardwareId}, or the brand_id is already up to date.";
-        return false;
       }
+      return false;
+      
     } catch (\PDOException $e) {
       throw new InternalException("Error updating the brand_id for hardware: " . $e->getMessage());
     }
@@ -261,12 +235,10 @@ class HardwaresModel {
       $stmt->execute();
 
       if ($stmt->rowCount() > 0) {
-        echo "Category ID for hardware with ID {$hardwareId} has been updated to {$categoryId}.";
         return true;
-      } else {
-        echo "No hardware found with ID {$hardwareId}, or the categories_id is already up to date.";
-        return false;
-      }
+      } 
+      return false;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error updating the categories_id for hardware: " . $e->getMessage());
     }

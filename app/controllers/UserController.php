@@ -5,8 +5,6 @@ require_once  base_path() . "/app/controllers/handler/handleController.php";
 
 use app\services\AuthService;
 use app\services\UserService;
-use app\utils\JwtUtils;
-
 
 class UserController {
 

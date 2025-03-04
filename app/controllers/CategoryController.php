@@ -1,10 +1,8 @@
 <?php
-
 namespace app\controllers;
 
 require_once  base_path() . "/app/controllers/handler/handleController.php";
 
-use app\database\models\CategoriesModel;
 use app\services\AuthService;
 use app\services\CategoryService;
 

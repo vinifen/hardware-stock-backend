@@ -9,11 +9,7 @@ use \PDO;
 class CategoriesModel {
   private PDO $pdo;
 
-  public function __construct(DBConnection $db)
-  {
-    echo "construct CategoriesModel";
-    $this->pdo = $db->connect();
-  }
+  public function __construct(DBConnection $db) { $this->pdo = $db->connect(); }
 
   public function insert(string $name, string $userId) {
     try {
@@ -26,9 +22,8 @@ class CategoriesModel {
       if (empty($lastInsertId)) {
         throw new ClientException("Failed to insert category. Please check your input.");
       }
-
-      echo "Category inserted with ID: " . $lastInsertId;
       return $lastInsertId;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error inserting category: " . $e->getMessage());
     }
@@ -43,12 +38,10 @@ class CategoriesModel {
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
       if (empty($result)) {
-        echo "No data found for category with ID: " . $categoryId;
         return null;
       }
-
-      echo print_r($result, true) . " TEST DB - Select Category";
       return $result;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error retrieving category data for category ID: " . $e->getMessage());
     }
@@ -62,12 +55,10 @@ class CategoriesModel {
 
       $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
       if (empty($result)) {
-        echo "No data found for category with user ID: " . $userId;
         return null;
       }
-
-      echo print_r($result, true) . " TEST DB - Select Category";
       return $result;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error retrieving category data for user ID: " . $e->getMessage());
     }
@@ -82,12 +73,10 @@ class CategoriesModel {
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
-        echo "No category found with ID: " . $categoryId . " or name is the same.";
         return false;
       }
-
-      echo "Category name updated successfully for category ID: " . $categoryId;
       return true;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error updating category name for category ID $categoryId: " . $e->getMessage());
     }
@@ -101,15 +90,12 @@ class CategoriesModel {
       $stmt->execute();
 
       if ($stmt->rowCount() === 0) {
-        echo "No category found with ID: " . $categoryId;
         return false;
       }
-
-      echo "Category with ID: " . $categoryId . " deleted successfully.";
       return true;
+
     } catch (\PDOException $e) {
       throw new InternalException("Error deleting category with ID $categoryId: " . $e->getMessage());
     }
   }
-  
 }

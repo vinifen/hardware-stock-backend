@@ -1,5 +1,4 @@
 <?php
-
 namespace app\controllers;
 
 require_once  base_path() . "/app/controllers/handler/handleController.php";

@@ -1,5 +1,4 @@
 <?php 
-
 namespace app\services;
 
 use app\database\models\BrandsModel;
@@ -21,7 +20,6 @@ class BrandService {
 
   public function get(int $brandId, string $userId) {
     try{ 
-      echo "Brand Service get: " . $brandId . " " . $userId;
       $result = $this->brandModel->select($brandId, $userId);
       if(empty($result)){
         throw new ClientException("Brand not found");

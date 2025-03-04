@@ -1,6 +1,6 @@
 <?php
-
 namespace core\validation;
+
 use core\exceptions\ClientException;
 
 class CategoryValidator {

@@ -9,10 +9,7 @@ use \PDO;
 class RefreshTokensModel {
   private PDO $pdo;
 
-  public function __construct(DBConnection $db)
-  {
-    $this->pdo = $db->connect();
-  }
+  public function __construct(DBConnection $db) { $this->pdo = $db->connect(); }
 
   public function insert(string $token, string $userId, string $rtId): bool {
     try {
@@ -46,7 +43,6 @@ class RefreshTokensModel {
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
       
       if (empty($result)) {
-        echo "No data found for refresh token with ID: " . $rtId;
         return null;
       }
      
@@ -64,11 +60,8 @@ class RefreshTokensModel {
       $stmt->execute();
       
       if ($stmt->rowCount() === 0) {
-        echo "No refresh token found with ID: " . $rtId;
         throw new ClientException("Refresh token not found.");
       }
-      
-      echo "Refresh token with ID: " . $rtId . " deleted successfully.";
       
       return true;
     } catch (\PDOException $e) {

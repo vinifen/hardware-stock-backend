@@ -1,18 +1,13 @@
 <?php
 namespace core\library;
+
 use Firebase\JWT\Key;
 use \Firebase\JWT\JWT;
 use core\exceptions\InternalException;
 
 class JwtHandler{ 
 
-  public function __construct(private $jwtKey) {
-    echo "CONTRUCT JWTHANDLER";
-  }
-
-  public function test($testParam){
-    echo  "JWT " . $testParam . " OK ";
-  }
+  public function __construct(private $jwtKey) {}
 
   public function encodeToken($payload) {
     try{ 

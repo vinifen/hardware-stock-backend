@@ -1,5 +1,4 @@
 <?php
-
 use core\exceptions\ClientException;
 use core\exceptions\InternalException;
 

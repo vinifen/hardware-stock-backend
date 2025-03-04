@@ -9,12 +9,7 @@ use \PDO;
 class UsersModel {
   private PDO $pdo;
 
-  public function __construct(DBConnection $db)
-  {
-    echo "contruct User Model";
-    
-    $this->pdo = $db->connect();
-  }
+  public function __construct(DBConnection $db) { $this->pdo = $db->connect(); }
 
   public function insert(string $username, string $password, string $userId) {
     try {
@@ -30,8 +25,6 @@ class UsersModel {
         throw new ClientException("Failed to insert user. Please check your credentials.");
       }
       
-      echo "New user inserted with ID: " . $lastInsertId;
-
       return $lastInsertId;
 
     } catch (\PDOException $e) {
@@ -49,13 +42,8 @@ class UsersModel {
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
       
       if(empty($result)){
-
-        echo "No data found for user with username: " . $username;
-
         return null;
       }
-
-      echo print_r($result) . " TEST DB - Select by Username";
 
       return $result;
 
@@ -72,11 +60,8 @@ class UsersModel {
 
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
       if (empty($result)) {
-        echo "No data found for user with ID: " . $userId;
         return null;
       }
-
-      echo print_r($result) . " TEST DB - Select by User ID";
 
       return $result;
 
@@ -94,15 +79,10 @@ class UsersModel {
       
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
       if (empty($result)) {
-
-        echo "No password found for user with ID: " . $userId;
-
         return null; 
       }
 
       $password = $result['password'];
-      echo print_r($password) . " TEST DB - Select User Password";
-
       return $password;
     } catch (\PDOException $e) {
       throw new InternalException("Error retrieving password for user ID: " . $e->getMessage());
