@@ -4,6 +4,7 @@ namespace app\database;
 use core\exceptions\InternalException;
 use Exception;
 use PDO;
+use core\config\Variables;
 
 class DBConnection {
   private $host;
@@ -13,11 +14,11 @@ class DBConnection {
   private $password;
 
   public function __construct() {
-    $this->host = $_ENV['DB_HOST'];
-    $this->port = $_ENV['DB_PORT'];
-    $this->dbName = $_ENV['DB_NAME'];
-    $this->user = $_ENV['DB_USER'];
-    $this->password = $_ENV['DB_PASSWORD'];
+    $this->host = Variables::DB_HOST();
+    $this->port = Variables::DB_PORT();
+    $this->dbName = Variables::DB_NAME();
+    $this->user = Variables::DB_USER();
+    $this->password = Variables::DB_PASSWORD();
   }
 
   public function connect() {

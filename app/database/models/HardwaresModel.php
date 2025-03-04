@@ -19,7 +19,7 @@ class HardwaresModel {
       ?int $categoryId
     ) {
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO hardwares (name, price, users_id, brands_id, categories_id) VALUES (?, ?, ?, ?, ?)");
+      $stmt = $this->pdo->prepare("INSERT INTO hardwares (name, price, user_id, brand_id, category_id) VALUES (?, ?, ?, ?, ?)");
       $stmt->bindValue(1, $name, PDO::PARAM_STR);
       $stmt->bindValue(2, $price, PDO::PARAM_STR);
       $stmt->bindValue(3, $userId, PDO::PARAM_STR);
@@ -47,9 +47,9 @@ class HardwaresModel {
         "SELECT 
           name AS hardware_name,
           price,
-          categories_id AS category_id,
-          brands_id AS brand_id
-         FROM hardwares WHERE id = ? AND users_id = ?"
+          category_id,
+          brand_id
+         FROM hardwares WHERE id = ? AND user_id = ?"
       );
       $stmt->bindValue(1, $hardwareId, PDO::PARAM_INT);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
@@ -75,13 +75,13 @@ class HardwaresModel {
           hardwares.id AS hardware_id, 
           hardwares.name AS hardware_name, 
           hardwares.price, 
-          hardwares.users_id, 
+          hardwares.user_id, 
           brands.name AS brand_name, 
           categories.name AS category_name
         FROM hardwares 
-        INNER JOIN brands ON hardwares.brands_id = brands.id 
-        INNER JOIN categories ON hardwares.categories_id = categories.id 
-        WHERE hardwares.id = ? AND hardwares.users_id = ?"
+        INNER JOIN brands ON hardwares.brand_id = brands.id 
+        INNER JOIN categories ON hardwares.category_id = categories.id 
+        WHERE hardwares.id = ? AND hardwares.user_id = ?"
       );
       $stmt->bindValue(1, $hardwareId, PDO::PARAM_INT);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
@@ -102,7 +102,7 @@ class HardwaresModel {
 
   public function selectAllByUserId(string $userId){
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM hardwares WHERE users_id = ?");
+      $stmt = $this->pdo->prepare("SELECT * FROM hardwares WHERE user_id = ?");
       $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
@@ -127,13 +127,13 @@ class HardwaresModel {
           hardwares.id AS hardware_id, 
           hardwares.name AS hardware_name, 
           hardwares.price, 
-          hardwares.users_id, 
+          hardwares.user_id, 
           brands.name AS brand_name, 
           categories.name AS category_name
         FROM hardwares 
-        LEFT JOIN brands ON hardwares.brands_id = brands.id 
-        LEFT JOIN categories ON hardwares.categories_id = categories.id 
-        WHERE hardwares.users_id = ?"
+        LEFT JOIN brands ON hardwares.brand_id = brands.id 
+        LEFT JOIN categories ON hardwares.category_id = categories.id 
+        WHERE hardwares.user_id = ?"
       );
       $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
@@ -153,7 +153,7 @@ class HardwaresModel {
 
   public function delete(int $hardwareId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("DELETE FROM hardwares WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("DELETE FROM hardwares WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $hardwareId, PDO::PARAM_INT);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
@@ -170,7 +170,7 @@ class HardwaresModel {
 
   public function alterPrice(int $hardwareId, float $newPrice, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("UPDATE hardwares SET price = ? WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("UPDATE hardwares SET price = ? WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $newPrice, PDO::PARAM_STR);
       $stmt->bindValue(2, $hardwareId, PDO::PARAM_INT);
       $stmt->bindValue(3, $userId, PDO::PARAM_STR);
@@ -190,7 +190,7 @@ class HardwaresModel {
 
   public function alterName(int $hardwareId, string $newName, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("UPDATE hardwares SET name = ? WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("UPDATE hardwares SET name = ? WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $newName, PDO::PARAM_STR);
       $stmt->bindValue(2, $hardwareId, PDO::PARAM_INT);
       $stmt->bindValue(3, $userId, PDO::PARAM_STR);
@@ -209,7 +209,7 @@ class HardwaresModel {
 
   public function alterBrandId(int $hardwareId, int $brandId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("UPDATE hardwares SET brands_id = ? WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("UPDATE hardwares SET brand_id = ? WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $brandId, PDO::PARAM_INT);
       $stmt->bindValue(2, $hardwareId, PDO::PARAM_INT);
       $stmt->bindValue(3, $userId, PDO::PARAM_STR);
@@ -228,7 +228,7 @@ class HardwaresModel {
 
   public function alterCategoryId(int $hardwareId, int $categoryId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("UPDATE hardwares SET categories_id = ? WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("UPDATE hardwares SET category_id = ? WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
       $stmt->bindValue(2, $hardwareId, PDO::PARAM_INT);
       $stmt->bindValue(3, $userId, PDO::PARAM_STR);
@@ -240,7 +240,7 @@ class HardwaresModel {
       return false;
 
     } catch (\PDOException $e) {
-      throw new InternalException("Error updating the categories_id for hardware: " . $e->getMessage());
+      throw new InternalException("Error updating the category_id for hardware: " . $e->getMessage());
     }
   }
 

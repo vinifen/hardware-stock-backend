@@ -13,36 +13,36 @@ CREATE TABLE users (
 CREATE TABLE brands (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(60),
-	users_id UUID NOT NULL,
-	FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE
+	user_id UUID NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE categories (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(60),
-	users_id UUID NOT NULL,
-	FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE
+	user_id UUID NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE hardwares (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(200) NOT NULL,
 	price DECIMAL(10, 3),  
-	users_id UUID NOT NULL,
-	FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE,
-	brands_id INT,
-	FOREIGN KEY (brands_id) REFERENCES brands(id),
-	categories_id INT,
-	FOREIGN KEY (categories_id) REFERENCES categories(id)
+	user_id UUID NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+	brand_id INT,
+	FOREIGN KEY (brand_id) REFERENCES brands(id),
+	category_id INT,
+	FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 CREATE TABLE refresh_tokens (
 	id UUID NOT NULL PRIMARY KEY,
 	token TEXT NOT NULL, 
-	users_id UUID NOT NULL, 
+	user_id UUID NOT NULL, 
 	expires_at TIMESTAMP NOT NULL,  
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE 
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE 
 );
 
 
