@@ -1,7 +1,6 @@
 <?php
 namespace app\services;
 
-
 use app\database\models\RefreshTokensModel;
 use app\database\models\UsersModel;
 use core\library\JwtHandler;
@@ -41,7 +40,6 @@ class AuthService{
     }
   }
 
-
   public function verifyUsername(string $username){
     try {
       UserValidator::username($username);
@@ -50,10 +48,8 @@ class AuthService{
         throw new ClientException("User does not exist");
       }
 
-      echo $result["id"] . $result["id"] . "RESULT VEIRFYUSERNAME";
       return $result;
     } catch (\Exception $e) {
-      echo "aqui em asdf32323232333333";
       throw $e;
     }
   }
@@ -61,7 +57,6 @@ class AuthService{
   public function verifyPassword(string $password, string $userId){
     try{ 
       UserValidator::password($password);
-      echo "AQUIASDFAS";
       $hashPassword = $this->userModel->selectPassword($userId);
       if(!password_verify($password, $hashPassword)){
         throw new ClientException("Invalid credentials");
@@ -75,7 +70,6 @@ class AuthService{
     try {
       UserValidator::password($password);
       $hashPassword = password_hash($password, PASSWORD_BCRYPT);
-      echo $hashPassword . "HASH PASSWORD";
       return $hashPassword;
     } catch (\Exception $e){
       throw $e;
@@ -92,7 +86,6 @@ class AuthService{
   }
 
   public function verifyRefreshToken(string $refreshToken){
-    echo  "chego";
     try {
       $rtPayload = $this->jwtRefreshHandler->decodeToken($refreshToken);
       $resultRefreshToken = $this->refreshTokensModel->select($rtPayload->token_id, $rtPayload->user_id);
@@ -171,7 +164,7 @@ class AuthService{
   //       throw new ClientException("User does not exist");
   //     }
   //     $payload = $this->jwtSessionHandler->decodeToken($_COOKIE["token1"]);
-  //     echo var_dump($payload->public_user_id) . "PAYLOADzzzzzzzzz";
+  //    echo var_dump($payload->public_user_id) . "PAYLOADzzzzzzzzz";
   //     if($payload->public_user_id !== $publicUserId){
   //       throw new ClientException("Invalid user");
   //     }

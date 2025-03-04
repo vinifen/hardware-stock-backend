@@ -27,27 +27,32 @@ class AuthMiddleware {
 
     $statusRefresh = null;
     $refreshToken = $_COOKIE["token2"];
-    if(!empty($refreshToken)){
-      try {
-        $this->authService->verifyRefreshToken($refreshToken);
-        $statusRefresh = true;
-      } catch (\Exception $e) {
-        error_log($e);
-        $statusRefresh = false;
-      }  
-    }else{
+    // if(!empty($refreshToken)){
+    //   try {
+    //     $this->authService->verifyRefreshToken($refreshToken);
+    //     $statusRefresh = true;
+    //   } catch (\Exception $e) {
+    //     error_log($e);
+    //     $statusRefresh = false;
+    //   }  
+    // }else{
+    //   $statusRefresh = false;
+    // }
+    if(empty($refreshToken)){
       $statusRefresh = false;
+    }else{
+      $statusRefresh = true;
     }
 
     $message = "";
     if(!$statusSession){
-      $message = "You are not logged in";
+      $message = "You are not logged in.";
     }else{
-      $message = "Logged in";
+      $message = "Logged in.";
     }
 
     if($statusSession === false){
-      $content = ["stStatus" => $statusSession, "rtStatus" => $statusRefresh, "message" => $message];
+      $content = ["stStatus" => $statusSession, "hasRt" => $statusRefresh, "message" => $message];
       send_response(false, $content, 401);
       exit;
     }

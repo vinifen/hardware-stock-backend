@@ -23,7 +23,6 @@ class DotenvHandler
     }
   } 
 
-
   private static function dotEnvErrorMessage()
   {
     return '
@@ -34,13 +33,16 @@ class DotenvHandler
       please create a .env file in the root of the project with
       the following variables (example values are provided):
 
-      SERVER_HOSTNAME=localhost
-      SERVER_PORT=1111
+      DB_HOST=localhost
+      DB_USER=postgres
+      DB_PASSWORD=abc321
+      DB_NAME=hardware_stock
+      DB_PORT=5432
 
-      CORS_ORIGIN=http://localhost:4200
+      ALLOWED_ORIGIN=http://localhost:4200
 
-      JWT_SESSION_KEY=jwtsessiontokenkey**
-      JWT_REFRESH_KEY=jwtrefreshtokenkey**
+      JWT_SESSION_KEY=yourjwtsessiontokenkey;
+      JWT_REFRESH_KEY=yourjwtrefreshtokenkey;
 
       Without the .env file, the application will use default 
       values, which may cause unexpected behavior and errors.

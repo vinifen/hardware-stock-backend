@@ -1,5 +1,4 @@
 <?php
-
 namespace app\services;
 
 use Ramsey\Uuid\Uuid;
@@ -15,14 +14,14 @@ class UserService {
       UserValidator::username($username);
       $hasUser = $this->userModel->selectUsernameAndUserIdByUsername($username);
       if($hasUser !== null){
-        throw new ClientException("User already exists");
+        throw new ClientException("User already exists.");
       }
 
       $userId = Uuid::uuid7();
-      echo $userId;
+ 
       $this->userModel->insert($username, $hashPassword, $userId);
 
-      return "User successfully created";
+      return "User successfully created.";
     } catch (\Exception $e){
       throw $e;
     }
@@ -32,10 +31,9 @@ class UserService {
     try {
       $userData = $this->userModel->select($userId);
       if(empty($userData)){
-        throw new ClientException("User not found");
+        throw new ClientException("User not found.");
       }
       return $userData;
-      echo "GET USER SERVICE ok";
     } catch (\Exception $e){
       throw $e;
     }
@@ -46,11 +44,11 @@ class UserService {
       UserValidator::username($newUsername);
       $hasUser = $this->userModel->selectUsernameAndUserIdByUsername($newUsername);
       if($hasUser !== null){
-        throw new ClientException("Username already registered");
+        throw new ClientException("Username already registered.");
       }
 
       $this->userModel->alterUsername($userId, $newUsername);
-      return "Username successfully updated";
+      return "Username successfully updated.";
     } catch (\Exception $e){
       throw $e;
     }
@@ -60,7 +58,7 @@ class UserService {
     try {
       UserValidator::password($newPassword);
       $this->userModel->alterPassword($userId, $newPassword);
-      return "Password successfully updated";
+      return "Password successfully updated.";
     } catch (\Exception $e){
       throw $e;
     }

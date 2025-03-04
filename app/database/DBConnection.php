@@ -1,6 +1,7 @@
 <?php
 namespace app\database;
 
+use core\exceptions\InternalException;
 use Exception;
 use PDO;
 
@@ -12,7 +13,6 @@ class DBConnection {
   private $password;
 
   public function __construct() {
-    echo "contruct DATABASE Model";
     $this->host = $_ENV['DB_HOST'];
     $this->port = $_ENV['DB_PORT'];
     $this->dbName = $_ENV['DB_NAME'];
@@ -26,10 +26,9 @@ class DBConnection {
       $pdo = new PDO($dsn, $this->user, $this->password);
       $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-      echo "Postgresql connected";
       return $pdo;
     } catch (Exception $e) {
-      throw new \Exception("Error connecting to Postgresql: " . $e->getMessage());
+      throw new InternalException("Error connecting to Postgresql: " . $e->getMessage());
     }
   }
 
