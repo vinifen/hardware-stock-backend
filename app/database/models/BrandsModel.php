@@ -13,7 +13,7 @@ class BrandsModel {
 
   public function insert(string $name, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO brands (name, users_id) VALUES (?,?)");
+      $stmt = $this->pdo->prepare("INSERT INTO brands (name, user_id) VALUES (?,?)");
       $stmt->bindValue(1, $name, PDO::PARAM_STR);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
@@ -32,7 +32,7 @@ class BrandsModel {
 
   public function select(int $brandId, string $userId){
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM brands WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("SELECT * FROM brands WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $brandId, PDO::PARAM_INT);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
@@ -51,7 +51,7 @@ class BrandsModel {
 
   public function selectAllUserId(string $userId){
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM brands WHERE users_id = ?");
+      $stmt = $this->pdo->prepare("SELECT * FROM brands WHERE user_id = ?");
       $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
@@ -69,7 +69,7 @@ class BrandsModel {
 
   public function alter(int $brandId, string $newName, string $userId): bool {
     try {
-      $stmt = $this->pdo->prepare("UPDATE brands SET name = ? WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("UPDATE brands SET name = ? WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $newName, PDO::PARAM_STR);
       $stmt->bindValue(2, $brandId, PDO::PARAM_INT);
       $stmt->bindValue(3, $userId, PDO::PARAM_STR);
@@ -88,7 +88,7 @@ class BrandsModel {
 
   public function delete(int $brandId, string $userId): bool {
     try {
-      $stmt = $this->pdo->prepare("DELETE FROM brands WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("DELETE FROM brands WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $brandId, PDO::PARAM_INT);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();

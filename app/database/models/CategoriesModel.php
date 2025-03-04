@@ -13,7 +13,7 @@ class CategoriesModel {
 
   public function insert(string $name, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("INSERT INTO categories (name, users_id) VALUES (? , ?)");
+      $stmt = $this->pdo->prepare("INSERT INTO categories (name, user_id) VALUES (? , ?)");
       $stmt->bindValue(1, $name, PDO::PARAM_STR);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
@@ -31,7 +31,7 @@ class CategoriesModel {
 
   public function select(int $categoryId, string $userId) {
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();
@@ -49,7 +49,7 @@ class CategoriesModel {
 
   public function selectAllUserId(string $userId){
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE users_id = ?");
+      $stmt = $this->pdo->prepare("SELECT * FROM categories WHERE user_id = ?");
       $stmt->bindValue(1, $userId, PDO::PARAM_STR);
       $stmt->execute();
 
@@ -66,7 +66,7 @@ class CategoriesModel {
 
   public function alter(int $categoryId, string $newName, string $userId): bool {
     try {
-      $stmt = $this->pdo->prepare("UPDATE categories SET name = ? WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("UPDATE categories SET name = ? WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $newName, PDO::PARAM_STR);
       $stmt->bindValue(2, $categoryId, PDO::PARAM_INT);
       $stmt->bindValue(3, $userId, PDO::PARAM_STR);
@@ -84,7 +84,7 @@ class CategoriesModel {
 
   public function delete(int $categoryId, string $userId): bool {
     try {
-      $stmt = $this->pdo->prepare("DELETE FROM categories WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("DELETE FROM categories WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();

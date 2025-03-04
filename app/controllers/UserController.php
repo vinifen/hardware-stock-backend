@@ -71,8 +71,8 @@ class UserController {
 
       $this->userService->userModel->delete($stPayload->user_id);
 
-      setcookie("token1", "", time() - 9999 * 100, "/");
-      setcookie("token2", "", time() - 9999 * 100, "/");
+      setcookie("token1", "", time() - 9999 * 1000, "/");
+      setcookie("token2", "", time() - 9999 * 1000, "/");
 
       send_response(true, ["message" => "User successfully deleted."], 200);
     }, "deleting user.");

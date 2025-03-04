@@ -21,7 +21,7 @@ class HardwareController {
       if (!isset($body["category_id"])) {
         $body["category_id"] = null;
       }
-      
+
       $this->hardwareService->checkHardwareRelated($body["brand_id"], $body["category_id"], $stPayload->user_id);
       $resultHardware = $this->hardwareService->create($body["name"], $body["price"], $stPayload->user_id, $body["brand_id"], $body["category_id"]);
 

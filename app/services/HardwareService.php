@@ -90,69 +90,33 @@ class HardwareService {
     }
   }
 
-  public function checkHardwareRelated(?int $brand_id, ?int $category_id, string $userId) {
+  public function checkHardwareRelated($brand_id, $category_id, $userId) {
     try {
-      
-      if(!empty($brand_id)){ 
+      if (!is_null($brand_id)) {
+        if (!filter_var($brand_id, FILTER_VALIDATE_INT)) {
+          throw new ClientException("Invalid brand ID. Must be an integer.");
+        }
         $brand = $this->brandModel->select($brand_id, $userId);
-        if(empty($brand)){
+        if (empty($brand)) {
           throw new ClientException("Brand not found.");
         }
       }
-      if(!empty($category_id)){
+
+      if (!is_null($category_id)) {
+        if (!filter_var($category_id, FILTER_VALIDATE_INT)) {
+          throw new ClientException("Invalid category ID. Must be an integer.");
+        }
         $category = $this->categoryModel->select($category_id, $userId);
-        if(empty($category)){
+        if (empty($category)) {
           throw new ClientException("Category not found.");
         }
       }
+
       return "Hardware related successfully.";
     } catch (\Exception $e) {
-      throw $e;
+        throw $e;
     }
-  }
+}
 
-  // public function updateBrand($hardwareId, $brandId, $userId) {
-  //   try{
-  //     $this->hardwareModel->alterBrandId($hardwareId, $brandId, $userId);
-  //     return "Hardware brand updated successfully";
-  //   } catch (\Exception $e){
-  //     throw $e;
-  //   }
-  // }
 
-  // public function updateCategory(int $hardwareId, $categoryId) {
-  //   try{
-  //     $this->hardwareModel->alterCategoryId($hardwareId, $categoryId);
-  //     return "Hardware category updated successfully";
-  //   } catch (ClientException | InternalException $e) {
-  //     throw $e; 
-  //   } catch (\Exception $e){
-  //     throw $e;
-  //   }
-  // }
-
-  // public function getFullPrice($userId){
-  //   try{
-  //     $result = $this->hardwareModel->selectTotalPrice($userId);
-  //     if(empty($result)){
-  //       throw new ClientException("No hardware prices found for this user");
-  //     }
-  //     return $result;
-  //   } catch (ClientException | InternalException $e) {
-  //     throw $e; 
-  //   } catch (\Exception $e){
-  //     throw $e;
-  //   }
-  // }
-
-  // public function delete($hardwareId) {
-  //   try{ 
-  //     $this->hardwareModel->delete($hardwareId);
-  //     return "Hardware deleted successfully";
-  //   } catch (ClientException | InternalException $e) {
-  //     throw $e; 
-  //   } catch (\Exception $e){
-  //     throw $e;
-  //   }
-  // }
 }

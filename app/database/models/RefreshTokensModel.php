@@ -14,7 +14,7 @@ class RefreshTokensModel {
   public function insert(string $token, string $userId, string $rtId): bool {
     try {
       $expiresAt = date('Y-m-d H:i:s', strtotime('+7 days'));
-      $stmt = $this->pdo->prepare("INSERT INTO refresh_tokens (id, users_id, token, expires_at) VALUES (?, ?, ?, ?)");
+      $stmt = $this->pdo->prepare("INSERT INTO refresh_tokens (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)");
       $stmt->bindValue(1, $rtId, PDO::PARAM_STR);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->bindValue(3, $token, PDO::PARAM_STR);
@@ -35,7 +35,7 @@ class RefreshTokensModel {
 
   public function select(string $rtId, string $userId){
     try {
-      $stmt = $this->pdo->prepare("SELECT * FROM refresh_tokens WHERE id = ? AND users_id = ?");
+      $stmt = $this->pdo->prepare("SELECT * FROM refresh_tokens WHERE id = ? AND user_id = ?");
       $stmt->bindValue(1, $rtId, PDO::PARAM_STR);
       $stmt->bindValue(2, $userId, PDO::PARAM_STR);
       $stmt->execute();

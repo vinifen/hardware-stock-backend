@@ -7,6 +7,7 @@ use app\services\AuthService;
 use app\utils\JwtUtils;
 use core\exceptions\ClientException;
 use core\exceptions\InternalException;
+use core\config\Variables;
 
 class AuthController {
   public function __construct(private AuthService $authService) {}
@@ -25,15 +26,15 @@ class AuthController {
       setcookie("token1", $result["sessionToken"], [
         'expires'=>JwtUtils::sessionExpiration(),
         'path'=>'/',
-        'secure'=>false,
-        'httponly'=>true
+        'secure'=>Variables::cookie_secure(),
+        'httponly'=>Variables::cookie_http_only()
       ]);
 
       setcookie("token2", $result["refreshToken"], [
         'expires'=>JwtUtils::refreshExpiration(),
         'path'=>'/',
-        'secure'=>false,
-        'httponly'=>true
+        'secure'=>Variables::cookie_secure(),
+        'httponly'=>Variables::cookie_http_only()
       ]);
 
       send_response(true, ["message"=> "User logged in successfully"], 200);
@@ -57,15 +58,15 @@ class AuthController {
       setcookie("token1", $newTokens["sessionToken"], [
         'expires'=>JwtUtils::sessionExpiration(),
         'path'=>'/',
-        'secure'=>false,
-        'httponly'=>true
+        'secure'=>Variables::cookie_secure(),
+        'httponly'=>Variables::cookie_http_only()
       ]);
 
       setcookie("token2", $newTokens["refreshToken"], [
         'expires'=>JwtUtils::refreshExpiration(),
         'path'=>'/',
-        'secure'=>false,
-        'httponly'=>true
+        'secure'=>Variables::cookie_secure(),
+        'httponly'=>Variables::cookie_http_only()
       ]);
 
       send_response(true, ["message"=> "New session obtained"], 200);
